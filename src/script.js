@@ -116,14 +116,6 @@ Example.avalanche = function () {
   World.add(world, mouseConstraint)
   render.mouse = mouse
 
-  Matter.Events.on(mouseConstraint, 'mousedown', function (event) {
-    console.log(event)
-  })
-
-  Matter.Events.on(mouseConstraint, 'mouseup', function (event) {
-    console.log(event)
-  })
-
   Matter.Events.on(engine, 'afterUpdate', () => {
     if (mouseConstraint.body) {
       console.info(mouseConstraint.body)
