@@ -3,10 +3,10 @@
 var Example = Example || {}
 var w = window.innerWidth
 var h = window.innerHeight
-const content = document.querySelector('.eyeball-physics')
-const spritesArea = document.querySelector('.eyeball-sprites')
+const content = document.querySelector('.taskball-physics')
+const spritesArea = document.querySelector('.taskball-sprites')
 
-class Eyeball {
+class Taskball {
   constructor(id) {
     var x = Math.random() * w
     var y = Math.random() * -h
@@ -19,12 +19,16 @@ class Eyeball {
 
     this.radius = base + Math.random() * multiplier
     this.body = Matter.Bodies.circle(x, y, this.radius, {
+      // density: 0.0005,
+      // frictionAir: 0.06,
+      // restitution: 0.3,
+      // friction: 0.01,
       render: {
-        fillStyle: '#C44D58',
+        fillStyle: 'black',
         text: {
-          content: 'Test',
-          color: 'blue',
-          size: 16,
+          content: 'プログラミング学習',
+          color: 'white',
+          size: 10,
           family: 'Papyrus',
         },
       },
@@ -33,7 +37,7 @@ class Eyeball {
 
     this.element = document.createElement('div')
     this.element.className =
-      'eyeball ' + 'eyeball--' + Math.floor(Math.random() * 5)
+      'taskball ' + 'taskball--' + Math.floor(Math.random() * 5)
     this.element.style.width = this.radius * 2 + 'px'
     this.element.style.height = this.radius * 2 + 'px'
     spritesArea.appendChild(this.element)
@@ -47,6 +51,12 @@ class Eyeball {
   }
 }
 
+const taskballs = []
+const numCircle = 30
+for (var i = 0; i < numCircle; i++) {
+  taskballs.push(new Taskball(i))
+}
+
 Example.avalanche = function () {
   var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -58,6 +68,138 @@ Example.avalanche = function () {
     Mouse = Matter.Mouse,
     World = Matter.World,
     Bodies = Matter.Bodies
+
+  console.info(Render)
+
+  // https://github.com/liabru/matter-js/blob/master/src/render/Render.js
+  Render.bodies = function (render, bodies, context) {
+    var c = context,
+      engine = render.engine,
+      options = render.options,
+      showInternalEdges = options.showInternalEdges || !options.wireframes,
+      body,
+      part,
+      i,
+      k
+
+    for (i = 0; i < bodies.length; i++) {
+      body = bodies[i]
+
+      if (!body.render.visible) continue
+
+      // handle compound parts
+      for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
+        part = body.parts[k]
+
+        if (!part.render.visible) continue
+
+        if (options.showSleeping && body.isSleeping) {
+          c.globalAlpha = 0.5 * part.render.opacity
+        } else if (part.render.opacity !== 1) {
+          c.globalAlpha = part.render.opacity
+        }
+
+        if (
+          part.render.sprite &&
+          part.render.sprite.texture &&
+          !options.wireframes
+        ) {
+          // part sprite
+          var sprite = part.render.sprite,
+            texture = _getTexture(render, sprite.texture)
+
+          c.translate(part.position.x, part.position.y)
+          c.rotate(part.angle)
+
+          c.drawImage(
+            texture,
+            texture.width * -sprite.xOffset * sprite.xScale,
+            texture.height * -sprite.yOffset * sprite.yScale,
+            texture.width * sprite.xScale,
+            texture.height * sprite.yScale
+          )
+
+          // revert translation, hopefully faster than save / restore
+          c.rotate(-part.angle)
+          c.translate(-part.position.x, -part.position.y)
+        } else {
+          // part polygon
+          if (part.circleRadius) {
+            c.beginPath()
+            c.arc(
+              part.position.x,
+              part.position.y,
+              part.circleRadius,
+              0,
+              2 * Math.PI
+            )
+          } else {
+            c.beginPath()
+            c.moveTo(part.vertices[0].x, part.vertices[0].y)
+
+            for (var j = 1; j < part.vertices.length; j++) {
+              if (!part.vertices[j - 1].isInternal || showInternalEdges) {
+                c.lineTo(part.vertices[j].x, part.vertices[j].y)
+              } else {
+                c.moveTo(part.vertices[j].x, part.vertices[j].y)
+              }
+
+              if (part.vertices[j].isInternal && !showInternalEdges) {
+                c.moveTo(
+                  part.vertices[(j + 1) % part.vertices.length].x,
+                  part.vertices[(j + 1) % part.vertices.length].y
+                )
+              }
+            }
+
+            c.lineTo(part.vertices[0].x, part.vertices[0].y)
+            c.closePath()
+          }
+
+          if (!options.wireframes) {
+            c.fillStyle = part.render.fillStyle
+
+            if (part.render.lineWidth) {
+              c.lineWidth = part.render.lineWidth
+              c.strokeStyle = part.render.strokeStyle
+              c.stroke()
+            }
+
+            c.fill()
+          } else {
+            c.lineWidth = 1
+            c.strokeStyle = '#bbb'
+            c.stroke()
+          }
+        }
+
+        c.globalAlpha = 1
+
+        //Here's the custom part
+        if (part.render.text) {
+          //30px is default font size
+          var fontsize = 30
+          //arial is default font family
+          var fontfamily = part.render.text.family || 'Arial'
+          //white text color by default
+          var color = part.render.text.color || '#FFFFFF'
+
+          if (part.render.text.size) fontsize = part.render.text.size
+          else if (part.circleRadius) fontsize = part.circleRadius / 2
+
+          var content = ''
+          if (typeof part.render.text == 'string') content = part.render.text
+          else if (part.render.text.content) content = part.render.text.content
+
+          c.textBaseline = 'middle'
+          c.textAlign = 'center'
+          c.fillStyle = color
+          c.font = fontsize + 'px ' + fontfamily
+          c.fillText(content, part.position.x, part.position.y)
+        }
+      }
+    }
+  }
 
   var engine = Engine.create(),
     world = engine.world
@@ -77,22 +219,9 @@ Example.avalanche = function () {
   var runner = Runner.create()
   Runner.run(runner, engine)
 
-  // add bodies
-  // var stack = Composites.stack(0, 0, 10, 5, 0, 0, function(x, y) {
-  //     return Bodies.circle(x, y, Common.random(10, 50), { friction: 0.00001, restitution: 0.5, density: 0.001 });
-  // });
+  var balls = taskballs.map((taskball) => taskball.body)
+  World.add(world, balls)
 
-  // World.add(world, stack);
-
-  const eyeballs = []
-  const numCircle = 3
-  for (var i = 0; i < numCircle; i++) {
-    eyeballs.push(new Eyeball(i))
-  }
-  World.add(
-    world,
-    eyeballs.map((eyeball) => eyeball.body)
-  )
   ground = Matter.Bodies.rectangle(w / 2, h + 30, w, 60, {
     isStatic: true,
   })
@@ -103,7 +232,6 @@ Example.avalanche = function () {
   World.add(world, [ground, wall1, wall2])
 
   var mouse = Mouse.create(render.canvas)
-  // mouse.pixelRatio = pixelDensity()
   var mouseConstraint = MouseConstraint.create(engine, {
     mouse: mouse,
     constraint: {
@@ -116,14 +244,15 @@ Example.avalanche = function () {
   World.add(world, mouseConstraint)
   render.mouse = mouse
 
+  Matter.Events.on(mouseConstraint, 'mousemove', (event) => {
+    var foundPhysics = Matter.Query.point(balls, event.mouse.position)
+    console.log(foundPhysics[0])
+  })
+
   Matter.Events.on(engine, 'afterUpdate', () => {
     if (mouseConstraint.body) {
-      console.info(mouseConstraint.body)
+      // console.info(mouseConstraint.body)
     }
-
-    // eyeballs.forEach((eye) => {
-    //   eye.update()
-    // })
   })
 
   // fit the render viewport to the scene
@@ -148,67 +277,5 @@ Example.avalanche = function () {
     },
   }
 }
-
-function render() {
-  var bodies = Matter.Composite.allBodies(this.engine.world)
-  var canvas = document.getElementById('canvas')
-  var context = canvas.getContext('2d')
-
-  window.requestAnimationFrame(this.render)
-
-  context.fillStyle = '#FFFFFF'
-  context.fillRect(0, 0, canvas.width, canvas.height)
-  context.globalAlpha = 1
-  context.beginPath()
-
-  for (var i = 0; i < bodies.length; i += 1) {
-    var part = bodies[i]
-
-    if (part.render.text) {
-      var fontsize = 30
-      var fontfamily = part.render.text.family || 'Arial'
-      var color = part.render.text.color || '#FF0000'
-
-      if (part.render.text.size) {
-        fontsize = part.render.text.size
-      } else if (part.circleRadius) {
-        fontsize = part.circleRadius / 2
-      }
-
-      var content = ''
-      if (typeof part.render.text === 'string') {
-        content = part.render.text
-      } else if (part.render.text.content) {
-        content = part.render.text.content
-      }
-
-      context.fillStyle = 'black'
-      context.save()
-      context.translate(part.position.x, part.position.y)
-
-      context.textBaseline = 'middle'
-      context.textAlign = 'center'
-      context.fillStyle = color
-      context.font = fontsize + 'px ' + fontfamily
-      context.fillText(content, 0, 0)
-      context.restore()
-      context.fillStyle = 'blue'
-      context.fillRect(part.position.x, part.position.y, 10, 10)
-    }
-    var vertices = bodies[i].vertices
-    context.moveTo(vertices[0].x, vertices[0].y)
-
-    for (var j = 1; j < vertices.length; j += 1) {
-      context.lineTo(vertices[j].x, vertices[j].y)
-    }
-
-    context.lineTo(vertices[0].x, vertices[0].y)
-  }
-
-  context.lineWidth = 1.5
-  context.strokeStyle = '#000000'
-  context.stroke()
-}
-
 
 Example.avalanche()
