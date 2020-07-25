@@ -138,25 +138,32 @@ const spritesArea = document.querySelector('.taskball-sprites')
 
 class Taskball {
   constructor(id) {
+    this.id = id
+    this.text = 'プログラミング学習'
+    this.color = 'blue'
+    this.isDone = false
+
     var x = Math.random() * w
     var y = Math.random() * -h
-    var base = w / 30
-    if (base < 5) base = 5
-    if (base > 10) base = 10
+    var base = w / 20
+    // if (base < 5) base = 5
+    // if (base > 10) base = 10
     var multiplier = w / 10
     if (multiplier < 30) multiplier = 30
     if (multiplier > 100) multiplier = 100
-
     this.radius = base + Math.random() * multiplier
-    this.body = Matter.Bodies.circle(x, y, this.radius, {
+
+    this.body = Matter.Bodies.rectangle(x, y, this.radius, this.radius, {
       // density: 0.0005,
       // frictionAir: 0.06,
       // restitution: 0.3,
       // friction: 0.01,
       render: {
-        fillStyle: 'black',
+        fillStyle: this.isDone ? this.color : 'transparent',
+        strokeStyle: this.color,
+        lineWidth: 3,
         text: {
-          content: 'プログラミング学習',
+          content: this.text,
           color: 'white',
           size: 10,
           family: 'Papyrus',
@@ -199,16 +206,19 @@ Example.avalanche = function () {
     World = Matter.World,
     Bodies = Matter.Bodies
 
+  var canvas = document.querySelector('#task-area');
   var engine = Engine.create(),
     world = engine.world
 
   var render = Render.create({
-    element: content,
+    // element: content,
+    canvas: canvas,
     engine: engine,
     options: {
       width: w,
       height: h,
       wireframes: false,
+      background: 'transparent',
     },
   })
 

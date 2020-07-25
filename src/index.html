@@ -10,11 +10,15 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="taskball-physics"></div>
+    <div class="taskball-physics">
+      <canvas id="task-area" width="809" height="929" style="background:  0% 0% / contain rgb(24, 24, 29);"></canvas>
+      <canvas id="fireworks" width="809" height="929";></canvas>
+    </div>
     <div class="taskball-sprites"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.min.js"></script>
-    <!-- <script src="./Render.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+    <script src="./firework-anime.js"></script>
     <script src="./script.js"></script>
   </body>
 </html>
