@@ -1,4 +1,4 @@
-module .
+module api
 
 go 1.12
 
@@ -9,13 +9,14 @@ require (
 	github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354 // indirect
 	github.com/envoyproxy/go-control-plane v0.9.6 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.4.0 // indirect
-	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
-	github.com/go-sql-driver/mysql v1.5.0 // indirect
-	github.com/go-xorm/xorm v0.7.9 // indirect
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-xorm/xorm v0.7.9
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
+	github.com/google/martian v2.1.0+incompatible
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334 // indirect
 	github.com/ianlancetaylor/demangle v0.0.0-20200715173712-053cf528c12f // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
@@ -29,7 +30,7 @@ require (
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/yuin/goldmark v1.2.0 // indirect
-	go.uber.org/zap v1.15.0 // indirect
+	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect
 	golang.org/x/tools v0.0.0-20200724172932-b5fc9d354d99 // indirect
