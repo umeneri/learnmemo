@@ -12,17 +12,19 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-xorm/cmd/xorm v0.0.0-20190426080617-f87981e709a1 // indirect
 	github.com/go-xorm/xorm v0.7.9
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
-	github.com/google/martian v2.1.0+incompatible
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334 // indirect
 	github.com/ianlancetaylor/demangle v0.0.0-20200715173712-053cf528c12f // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/kr/pty v1.1.3 // indirect
 	github.com/lyft/protoc-gen-star v0.4.15 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/sftp v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
