@@ -1,12 +1,13 @@
 package service
 
 import (
+	"api/model"
 	"errors"
 	"fmt"
 	"log"
-	"api/model"
 
 	"github.com/go-xorm/xorm"
+	"xorm.io/core"
 )
 
 var DbEngine *xorm.Engine
@@ -21,7 +22,8 @@ func init() {
 	}
 	DbEngine.ShowSQL(true)
 	DbEngine.SetMaxOpenConns(2)
-	err = DbEngine.Sync2(new(model.Book))
+	DbEngine.SetMapper(core.GonicMapper{})
+	err = DbEngine.Sync2(new(model.Task))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

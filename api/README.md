@@ -1,3 +1,8 @@
+# xorm
+## reverse
+$ xorm reverse mysql root:root@/gin?charset=utf8mb4 $GOPATH/src/github.com/go-xorm/cmd/xorm/templates/goxorm
+
+
 # ref
 
 [Golang のパッケージ完全に理解した ← わかってない - くろのて](https://note.crohaco.net/2019/golang-package/)
