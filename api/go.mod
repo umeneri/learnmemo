@@ -43,4 +43,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 	rsc.io/sampler v1.99.99 // indirect
+	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb
 )
