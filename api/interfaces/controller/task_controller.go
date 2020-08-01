@@ -34,10 +34,6 @@ func NewTaskController(useCase usecase.TaskUseCase) TaskController {
 	}
 }
 
-func (t *taskController) getUserId() int64 {
-	return 1
-}
-
 func (t *taskController) AddTask(c *gin.Context) {
 	taskForm := TaskForm{}
 	err := c.BindJSON(&taskForm)
@@ -45,7 +41,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 	log.Println(err)
 
 	task := model.Task{
-		UserId:         t.getUserId(),
+		UserId:         t.taskUseCase.GetUserId(),
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
