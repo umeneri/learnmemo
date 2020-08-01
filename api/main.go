@@ -6,10 +6,12 @@ import (
 
 	"api/controller"
 	"api/middleware"
+	"api/service"
 )
 
 func setupServer() *gin.Engine {
-	taskController := controller.NewTaskController()
+	taskService := service.NewTaskService()
+	taskController := controller.NewTaskController(taskService)
 
 	engine := gin.Default()
 	engine.Use(middleware.RecordUaAndTime)

@@ -19,6 +19,7 @@ type TaskController interface {
 }
 
 type taskController struct {
+	taskService service.TaskService
 }
 
 type TaskForm struct {
@@ -27,8 +28,10 @@ type TaskForm struct {
 	Status         int    `json:"status" binding:"required"`
 }
 
-func NewTaskController() TaskController {
-	return &taskController{}
+func NewTaskController(service service.TaskService) TaskController {
+	return &taskController{
+		taskService: service,
+	}
 }
 
 func (t *taskController) getUserId(c *gin.Context) int64 {
@@ -46,8 +49,8 @@ func (t *taskController) AddTask(c *gin.Context) {
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	if err != nil {
@@ -56,8 +59,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 		return
 	}
 
-	taskService := service.TaskService{}
-	err = taskService.SetTask(&task)
+	err = t.taskService.SetTask(&task)
 	if err != nil {
 		log.Println(err)
 		c.String(http.StatusInternalServerError, "Server Error")
@@ -69,8 +71,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 }
 
 func (t *taskController) ListTask(c *gin.Context) {
-	taskService := service.TaskService{}
-	taskLists := taskService.GetTaskList()
+	taskLists := t.taskService.GetTaskList()
 	c.JSONP(http.StatusOK, gin.H{
 		"message": "ok",
 		"data":    taskLists,
@@ -95,7 +96,7 @@ func (t *taskController) UpdateTask(c *gin.Context) {
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
-		UpdatedAt: time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	if err != nil {
@@ -104,8 +105,7 @@ func (t *taskController) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	taskService := service.TaskService{}
-	err = taskService.UpdateTask(&task)
+	err = t.taskService.UpdateTask(&task)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
@@ -122,8 +122,7 @@ func (t *taskController) DeleteTask(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Bad request")
 		return
 	}
-	taskService := service.TaskService{}
-	err = taskService.DeleteTask(int(intId))
+	err = t.taskService.DeleteTask(int(intId))
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Server Error")
 		return

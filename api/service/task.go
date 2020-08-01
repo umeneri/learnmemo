@@ -2,46 +2,54 @@ package service
 
 import (
 	"api/model"
+
+	"github.com/go-xorm/xorm"
 )
 
-type TaskService struct{
-	// DbEngine  *xorm.Engine
+type TaskService interface {
+	SetTask(*model.Task) error
+	GetTaskList() []model.Task
+	UpdateTask(*model.Task) error
+	DeleteTask(id int) error
 }
-// func NewTaskService() *TaskService {
-// 	taskService := TaskService{
-// 		DbEngine: ,
-// 	}
-//   return &taskService
-// }
 
-func (TaskService) SetTask(task *model.Task) error {
-	_, err := DbEngine.Insert(task)
+type taskService struct {
+	dbEngine *xorm.Engine
+}
+
+func NewTaskService() TaskService {
+	dbEngine := initDbEngine()
+	return &taskService{dbEngine}
+}
+
+func (t *taskService) SetTask(task *model.Task) error {
+	_, err := t.dbEngine.Insert(task)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (TaskService) GetTaskList() []model.Task {
+func (t *taskService) GetTaskList() []model.Task {
 	tasks := make([]model.Task, 0)
-	err := DbEngine.Limit(10, 0).Find(&tasks)
+	err := t.dbEngine.Limit(10, 0).Find(&tasks)
 	if err != nil {
 		panic(err)
 	}
 	return tasks
 }
 
-func (TaskService) UpdateTask(newTask *model.Task) error {
-	_, err := DbEngine.Id(newTask.Id).Update(newTask)
+func (t *taskService) UpdateTask(newTask *model.Task) error {
+	_, err := t.dbEngine.Id(newTask.Id).Update(newTask)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (TaskService) DeleteTask(id int) error {
+func (t *taskService) DeleteTask(id int) error {
 	task := new(model.Task)
-	_, err := DbEngine.Id(id).Delete(task)
+	_, err := t.dbEngine.Id(id).Delete(task)
 	if err != nil {
 		return err
 	}
