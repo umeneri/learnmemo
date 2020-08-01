@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"api/model"
+	"api/domain/model"
 	"api/service"
 	"log"
 	"net/http"

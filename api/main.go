@@ -4,7 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"api/interfaces/controller"
-	"api/interfaces/router"
+	"api/infrastructure/router"
 	"api/service"
 )
 
