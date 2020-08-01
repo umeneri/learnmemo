@@ -3,9 +3,10 @@
 package main
 
 import (
-	"api/interfaces/controller"
+	"api/infrastructure/repository"
 	"api/infrastructure/router"
-	"api/service"
+	"api/interfaces/controller"
+	"api/usecase"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -18,10 +19,10 @@ import (
 var ts *httptest.Server
 
 func TestMain(m *testing.M) {
-    setup()
-    ret := m.Run()
-    teardown()
-    os.Exit(ret)
+	setup()
+	ret := m.Run()
+	teardown()
+	os.Exit(ret)
 }
 
 func TestTaskList(t *testing.T) {
@@ -53,8 +54,9 @@ func TestTaskAdd(t *testing.T) {
 func setup() {
 	if ts == nil {
 		dbName := "gin_test"
-		taskService := service.NewTaskService(dbName)
-		taskController := controller.NewTaskController(taskService)
+		taskRepository := repository.NewTaskRepository(dbName)
+		taskUseCase := usecase.NewTaskUseCase(taskRepository)
+		taskController := controller.NewTaskController(taskUseCase)
 		engine := router.SetupRoute(taskController)
 		ts = httptest.NewServer(engine)
 	}

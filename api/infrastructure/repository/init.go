@@ -1,4 +1,4 @@
-package service
+package repository
 
 import (
 	"api/domain/model"
