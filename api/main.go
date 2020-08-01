@@ -8,20 +8,21 @@ import (
 	"api/middleware"
 )
 
-func setupServer() *gin.Engine  {
+func setupServer() *gin.Engine {
+	taskController := controller.TaskController{}
 	engine := gin.Default()
 	engine.Use(middleware.RecordUaAndTime)
 	taskEngine := engine.Group("/task")
 	{
 		v1 := taskEngine.Group("/v1")
 		{
-			v1.POST("/add", controller.TaskAdd)
-			v1.GET("/list", controller.TaskList)
-			v1.PUT("/update/:id", controller.TaskUpdate)
-			v1.DELETE("/delete/:id", controller.TaskDelete)
+			v1.POST("/add", taskController.TaskAdd)
+			v1.GET("/list", taskController.TaskList)
+			v1.PUT("/update/:id", taskController.TaskUpdate)
+			v1.DELETE("/delete/:id", taskController.TaskDelete)
 		}
 	}
-  return engine
+	return engine
 }
 
 func main() {

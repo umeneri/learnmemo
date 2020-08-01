@@ -4,7 +4,15 @@ import (
 	"api/model"
 )
 
-type TaskService struct{}
+type TaskService struct{
+	// DbEngine  *xorm.Engine
+}
+// func NewTaskService() *TaskService {
+// 	taskService := TaskService{
+// 		DbEngine: ,
+// 	}
+//   return &taskService
+// }
 
 func (TaskService) SetTask(task *model.Task) error {
 	_, err := DbEngine.Insert(task)
