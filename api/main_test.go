@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	os.Exit(ret)
 }
 
-func TestTaskList(t *testing.T) {
+func TestListTask(t *testing.T) {
 	resp, err := http.Get(fmt.Sprintf("%s/task/v1/list", ts.URL))
 
 	if err != nil {
@@ -31,7 +31,7 @@ func TestTaskList(t *testing.T) {
 	checkResponseHeader(t, resp, 200)
 }
 
-func TestTaskAdd(t *testing.T) {
+func TestAddTask(t *testing.T) {
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"title":          "title1",
 		"progressMinute": 10,
