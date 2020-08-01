@@ -9,10 +9,7 @@ import (
 	"api/service"
 )
 
-func setupServer() *gin.Engine {
-	taskService := service.NewTaskService()
-	taskController := controller.NewTaskController(taskService)
-
+func setupRoute(taskController controller.TaskController) *gin.Engine {
 	engine := gin.Default()
 	engine.Use(middleware.RecordUaAndTime)
 	taskEngine := engine.Group("/task")
@@ -26,6 +23,14 @@ func setupServer() *gin.Engine {
 		}
 	}
 	return engine
+
+}
+func setupServer() *gin.Engine {
+	dbName := "gin"
+	taskService := service.NewTaskService(dbName)
+	taskController := controller.NewTaskController(taskService)
+
+	return setupRoute(taskController)
 }
 
 func main() {

@@ -10,9 +10,9 @@ import (
 	"xorm.io/core"
 )
 
-func initDbEngine() *xorm.Engine {
+func initDbEngine(dbName string) *xorm.Engine {
 	driverName := "mysql"
-	DsName := "root:root@(localhost:3306)/gin?charset=utf8"
+	DsName := fmt.Sprintf("root:root@(localhost:3306)/%s?charset=utf8", dbName)
 	err := errors.New("")
 	dbEngine, err := xorm.NewEngine(driverName, DsName)
 	if err != nil && err.Error() != "" {
