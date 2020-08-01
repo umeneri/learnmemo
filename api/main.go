@@ -8,7 +8,7 @@ import (
 	"api/middleware"
 )
 
-func main() {
+func setupServer() *gin.Engine  {
 	engine := gin.Default()
 	engine.Use(middleware.RecordUaAndTime)
 	taskEngine := engine.Group("/task")
@@ -21,5 +21,9 @@ func main() {
 			v1.DELETE("/delete/:id", controller.TaskDelete)
 		}
 	}
-	engine.Run(":3000")
+  return engine
+}
+
+func main() {
+	setupServer().Run(":3000")
 }
