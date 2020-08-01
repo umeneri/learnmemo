@@ -10,7 +10,6 @@ type TaskUseCase interface {
 	GetTaskList() []model.Task
 	UpdateTask(*model.Task) error
 	DeleteTask(id int) error
-	GetUserId() int64
 }
 
 type taskUseCase struct {
@@ -37,8 +36,4 @@ func (t *taskUseCase) UpdateTask(task *model.Task) error {
 
 func (t *taskUseCase) DeleteTask(id int) error {
 	return t.taskRepository.DeleteTask(id)
-}
-
-func (t *taskUseCase) GetUserId() int64 {
-	return 1
 }

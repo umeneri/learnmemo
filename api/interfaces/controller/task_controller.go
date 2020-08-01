@@ -3,6 +3,7 @@ package controller
 import (
 	"api/domain/model"
 	"api/usecase"
+	"api/interfaces/auth"
 	"log"
 	"net/http"
 	"strconv"
@@ -41,7 +42,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 	log.Println(err)
 
 	task := model.Task{
-		UserId:         t.taskUseCase.GetUserId(),
+		UserId:         auth.GetUserId(),
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
