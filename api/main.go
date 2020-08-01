@@ -3,15 +3,17 @@ package main
 import (
 	_ "github.com/go-sql-driver/mysql"
 
+	"api/usecase"
 	"api/interfaces/controller"
 	"api/infrastructure/router"
-	"api/service"
+	"api/infrastructure/repository"
 )
 
 func setupServer() {
 	dbName := "gin"
-	taskService := service.NewTaskService(dbName)
-	taskController := controller.NewTaskController(taskService)
+	taskRepository := repository.NewTaskRepository(dbName)
+	taskUseCase := usecase.NewTaskUseCase(taskRepository)
+	taskController := controller.NewTaskController(taskUseCase)
 	router.SetupRoute(taskController).Run(":3000")
 }
 

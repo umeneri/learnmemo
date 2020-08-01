@@ -2,7 +2,7 @@ package controller
 
 import (
 	"api/domain/model"
-	"api/service"
+	"api/usecase"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ type TaskController interface {
 }
 
 type taskController struct {
-	taskService service.TaskService
+	taskUseCase usecase.TaskUseCase
 }
 
 type TaskForm struct {
@@ -28,13 +28,13 @@ type TaskForm struct {
 	Status         int    `json:"status" binding:"required"`
 }
 
-func NewTaskController(service service.TaskService) TaskController {
+func NewTaskController(useCase usecase.TaskUseCase) TaskController {
 	return &taskController{
-		taskService: service,
+		taskUseCase: useCase,
 	}
 }
 
-func (t *taskController) getUserId(c *gin.Context) int64 {
+func (t *taskController) getUserId() int64 {
 	return 1
 }
 
@@ -45,7 +45,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 	log.Println(err)
 
 	task := model.Task{
-		UserId:         t.getUserId(c),
+		UserId:         t.getUserId(),
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
@@ -59,7 +59,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 		return
 	}
 
-	err = t.taskService.SetTask(&task)
+	err = t.taskUseCase.SetTask(&task)
 	if err != nil {
 		log.Println(err)
 		c.String(http.StatusInternalServerError, "Server Error")
@@ -71,7 +71,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 }
 
 func (t *taskController) ListTask(c *gin.Context) {
-	taskLists := t.taskService.GetTaskList()
+	taskLists := t.taskUseCase.GetTaskList()
 	c.JSONP(http.StatusOK, gin.H{
 		"message": "ok",
 		"data":    taskLists,
@@ -105,7 +105,7 @@ func (t *taskController) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	err = t.taskService.UpdateTask(&task)
+	err = t.taskUseCase.UpdateTask(&task)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
@@ -122,7 +122,7 @@ func (t *taskController) DeleteTask(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Bad request")
 		return
 	}
-	err = t.taskService.DeleteTask(int(intId))
+	err = t.taskUseCase.DeleteTask(int(intId))
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
