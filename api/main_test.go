@@ -3,10 +3,6 @@
 package main
 
 import (
-	"api/infrastructure/repository"
-	"api/infrastructure/router"
-	"api/interfaces/controller"
-	"api/usecase"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -52,14 +48,8 @@ func TestTaskAdd(t *testing.T) {
 }
 
 func setup() {
-	if ts == nil {
-		dbName := "gin_test"
-		taskRepository := repository.NewTaskRepository(dbName)
-		taskUseCase := usecase.NewTaskUseCase(taskRepository)
-		taskController := controller.NewTaskController(taskUseCase)
-		engine := router.SetupRoute(taskController)
-		ts = httptest.NewServer(engine)
-	}
+	engine := setupServer("test")
+	ts = httptest.NewServer(engine)
 }
 
 func teardown() {

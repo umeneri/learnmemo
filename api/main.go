@@ -1,22 +1,26 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 
-	"api/usecase"
-	"api/interfaces/controller"
-	"api/infrastructure/router"
 	"api/infrastructure/repository"
+	"api/infrastructure/router"
+	"api/interfaces/controller"
+	"api/usecase"
 )
 
-func setupServer() {
+func setupServer(env string) *gin.Engine {
 	dbName := "gin"
+	if env == "test" {
+		dbName = "gin_test"
+	}
 	taskRepository := repository.NewTaskRepository(dbName)
 	taskUseCase := usecase.NewTaskUseCase(taskRepository)
 	taskController := controller.NewTaskController(taskUseCase)
-	router.SetupRoute(taskController).Run(":3000")
+	return router.SetupRoute(taskController)
 }
 
 func main() {
-	setupServer()
+	setupServer("dev").Run(":3000")
 }
