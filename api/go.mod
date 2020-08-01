@@ -10,6 +10,7 @@ require (
 	github.com/envoyproxy/go-control-plane v0.9.6 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.4.0 // indirect
 	github.com/gin-gonic/gin v1.6.3
+	github.com/go-delve/delve v1.5.0 // indirect
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-xorm/cmd/xorm v0.0.0-20190426080617-f87981e709a1 // indirect
