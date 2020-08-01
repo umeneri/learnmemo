@@ -4,7 +4,7 @@ package main
 
 import (
 	"api/interfaces/controller"
-	"api/interfaces/router"
+	"api/infrastructure/router"
 	"api/service"
 	"bytes"
 	"encoding/json"

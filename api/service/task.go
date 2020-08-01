@@ -1,7 +1,7 @@
 package service
 
 import (
-	"api/model"
+	"api/domain/model"
 
 	"github.com/go-xorm/xorm"
 )
