@@ -17,8 +17,8 @@ type taskService struct {
 	dbEngine *xorm.Engine
 }
 
-func NewTaskService() TaskService {
-	dbEngine := initDbEngine()
+func NewTaskService(dbName string) TaskService {
+	dbEngine := initDbEngine(dbName)
 	return &taskService{dbEngine}
 }
 
