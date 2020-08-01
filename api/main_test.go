@@ -3,7 +3,8 @@
 package main
 
 import (
-	"api/controller"
+	"api/interfaces/controller"
+	"api/interfaces/router"
 	"api/service"
 	"bytes"
 	"encoding/json"
@@ -49,18 +50,18 @@ func TestTaskAdd(t *testing.T) {
 	checkResponseHeader(t, resp, 201)
 }
 
-func teardown() {
-	ts.Close()
-}
-
 func setup() {
 	if ts == nil {
 		dbName := "gin_test"
 		taskService := service.NewTaskService(dbName)
 		taskController := controller.NewTaskController(taskService)
-		engine := setupRoute(taskController)
+		engine := router.SetupRoute(taskController)
 		ts = httptest.NewServer(engine)
 	}
+}
+
+func teardown() {
+	ts.Close()
 }
 
 func checkResponseHeader(t *testing.T, resp *http.Response, statusCode int) {
