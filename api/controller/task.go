@@ -11,7 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TaskController struct {
+type TaskController interface {
+	AddTask(c *gin.Context)
+	ListTask(c *gin.Context)
+	UpdateTask(c *gin.Context)
+	DeleteTask(c *gin.Context)
+}
+
+type taskController struct {
 }
 
 type TaskForm struct {
@@ -20,19 +27,22 @@ type TaskForm struct {
 	Status         int    `json:"status" binding:"required"`
 }
 
+func NewTaskController() TaskController {
+	return &taskController{}
+}
 
-func (t *TaskController) GetUserId(c *gin.Context) int64 {
+func (t *taskController) getUserId(c *gin.Context) int64 {
 	return 1
 }
 
-func (t *TaskController) TaskAdd(c *gin.Context) {
+func (t *taskController) AddTask(c *gin.Context) {
 	taskForm := TaskForm{}
 	err := c.Bind(&taskForm)
 	log.Println(taskForm)
 	log.Println(err)
 
 	task := model.Task{
-		UserId:         t.GetUserId(c),
+		UserId:         t.getUserId(c),
 		Title:          taskForm.Title,
 		ProgressMinute: taskForm.ProgressMinute,
 		Status:         taskForm.Status,
@@ -59,7 +69,7 @@ func (t *TaskController) TaskAdd(c *gin.Context) {
 	})
 }
 
-func (t *TaskController) TaskList(c *gin.Context) {
+func (t *taskController) ListTask(c *gin.Context) {
 	taskService := service.TaskService{}
 	taskLists := taskService.GetTaskList()
 	c.JSONP(http.StatusOK, gin.H{
@@ -68,7 +78,7 @@ func (t *TaskController) TaskList(c *gin.Context) {
 	})
 }
 
-func (t *TaskController) TaskUpdate(c *gin.Context) {
+func (t *taskController) UpdateTask(c *gin.Context) {
 	id := c.Param("id")
 	intId, err := strconv.ParseInt(id, 10, 0)
 	if err != nil {
@@ -106,7 +116,7 @@ func (t *TaskController) TaskUpdate(c *gin.Context) {
 	})
 }
 
-func (t *TaskController) TaskDelete(c *gin.Context) {
+func (t *taskController) DeleteTask(c *gin.Context) {
 	id := c.Param("id")
 	intId, err := strconv.ParseInt(id, 10, 0)
 	if err != nil {
