@@ -37,7 +37,7 @@ func (t *taskController) getUserId(c *gin.Context) int64 {
 
 func (t *taskController) AddTask(c *gin.Context) {
 	taskForm := TaskForm{}
-	err := c.Bind(&taskForm)
+	err := c.BindJSON(&taskForm)
 	log.Println(taskForm)
 	log.Println(err)
 
@@ -55,7 +55,6 @@ func (t *taskController) AddTask(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Bad request")
 		return
 	}
-	log.Println(c.ContentType())
 
 	taskService := service.TaskService{}
 	err = taskService.SetTask(&task)
@@ -87,7 +86,7 @@ func (t *taskController) UpdateTask(c *gin.Context) {
 	}
 
 	taskForm := TaskForm{}
-	err = c.Bind(&taskForm)
+	err = c.BindJSON(&taskForm)
 	log.Println(taskForm)
 	log.Println(err)
 
