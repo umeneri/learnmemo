@@ -38,8 +38,10 @@ func init() {
 	)
 }
 
+// func (t *userController)
 func (t *userController) Index(c *gin.Context) {
 	user, err := auth.GetUser(c)
+	// t.userUseCase.FindUser()
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
@@ -58,6 +60,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		auth.SaveSession(user, c)
+		// t.userUseCase.LoginUser(user)
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")
@@ -77,6 +80,7 @@ func (t *userController) Callback(c *gin.Context) {
 	}
 
 	auth.SaveSession(user, c)
+	t.userUseCase.LoginUser(convertToSocialLoginUser(user))
 
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
@@ -88,4 +92,12 @@ func (t *userController) Logout(c *gin.Context) {
 
 func contextWithProviderName(c *gin.Context, provider string) *http.Request {
 	return c.Request.WithContext(context.WithValue(c.Request.Context(), "provider", provider))
+}
+
+func convertToSocialLoginUser(user goth.User) usecase.SocialLoginUser {
+	return usecase.SocialLoginUser{
+		UserID: user.UserID,
+		Email: user.Email,
+		AvatarURL: user.AvatarURL,
+	}
 }
