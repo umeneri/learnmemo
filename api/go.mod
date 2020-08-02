@@ -22,6 +22,7 @@ require (
 	github.com/ianlancetaylor/demangle v0.0.0-20200715173712-053cf528c12f // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kr/pty v1.1.3 // indirect
+	github.com/lunny/log v0.0.0-20160921050905-7887c61bf0de
 	github.com/lyft/protoc-gen-star v0.4.15 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect

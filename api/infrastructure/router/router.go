@@ -27,6 +27,7 @@ func SetupRoute(taskController controller.TaskController, userController control
 		{
 			v1.GET("/index", userController.Index)
 			v1.GET("/login", userController.Login)
+			v1.GET("/google-callback", userController.GoogleCallback)
 		}
 	}
 	return engine

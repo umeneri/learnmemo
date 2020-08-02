@@ -1,32 +1,18 @@
 package controller
 
 import (
+	"api/interfaces/auth"
 	"api/usecase"
 	"net/http"
-	"os"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lunny/log"
 )
-
-var (
-	googleOauthConfig *oauth2.Config
-)
-
-func init() {
-	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:3000/auth/callback",
-		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint:     google.Endpoint,
-	}
-}
 
 type UserController interface {
 	Index(c *gin.Context)
 	Login(c *gin.Context)
+	GoogleCallback(c *gin.Context)
 }
 
 type userController struct {
@@ -40,11 +26,26 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 }
 
 func (t *userController) Index(c *gin.Context) {
-	// c.JSON(http.StatusCreated, gin.H{
-	// 	"status": "ok",
-	// })
 	c.HTML(http.StatusOK, "index.html", "")
 }
 
 func (t *userController) Login(c *gin.Context) {
+	url := auth.GetGoogleOAuthUrl()
+	c.Redirect(http.StatusTemporaryRedirect, url)
+}
+
+
+func (t *userController) GoogleCallback(c *gin.Context) {
+	content, err := auth.GetUserInfo(c.Query("state"), c.Query("code"))
+
+	log.Printf("Content: %s\n", content)
+
+	t.userUseCase.LoginUser(content)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
 }
