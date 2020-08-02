@@ -8,9 +8,12 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-xorm/xorm v0.7.9
+	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.1 // indirect
+	github.com/gorilla/sessions v1.2.0
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/lunny/log v0.0.0-20160921050905-7887c61bf0de
+	github.com/markbates/goth v1.64.2
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

@@ -2,14 +2,14 @@ package router
 
 import (
 	"api/interfaces/controller"
-	"api/interfaces/middleware"
+	// "api/interfaces/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoute(taskController controller.TaskController, userController controller.UserController) *gin.Engine {
 	engine := gin.Default()
-	engine.Use(middleware.RecordUaAndTime)
+	// engine.Use(middleware.RecordUaAndTime)
 	engine.LoadHTMLGlob("web/*")
 	taskRoute := engine.Group("/task")
 	{
@@ -21,13 +21,16 @@ func SetupRoute(taskController controller.TaskController, userController control
 			v1.DELETE("/delete/:id", taskController.DeleteTask)
 		}
 	}
+
+	engine.GET("/", userController.Index)
+
 	userRoute := engine.Group("/user")
 	{
 		v1 := userRoute.Group("/v1")
 		{
-			v1.GET("/index", userController.Index)
-			v1.GET("/login", userController.Login)
-			v1.GET("/google-callback", userController.GoogleCallback)
+			v1.GET("/login", userController.LoginIndex)
+			v1.GET("/auth/:provider", userController.Login)
+			v1.GET("/callback/:provider", userController.Callback)
 		}
 	}
 	return engine

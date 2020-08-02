@@ -5,7 +5,7 @@ import (
 )
 
 type UserUseCase interface {
-	LoginUser(c) error
+	LoginUser() error
 }
 
 type userUseCase struct {

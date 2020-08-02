@@ -1,0 +1,29 @@
+<html>
+  <p>logined user </p>
+  <ul class="user">
+    <li>{{.user.UserID}}</li>
+    <li>{{.user.Email}}</li>
+    <li>{{.user.AvatarURL}}</li>
+    <li>{{.user.Name}}</li>
+  </ul>
+  </body>
+</html>
+<!--
+type User struct {
+	RawData           map[string]interface{}
+	Provider          string
+	Email             string
+	Name              string
+	FirstName         string
+	LastName          string
+	NickName          string
+	Description       string
+	UserID            string
+	AvatarURL         string
+	Location          string
+	AccessToken       string
+	AccessTokenSecret string
+	RefreshToken      string
+	ExpiresAt         time.Time
+	IDToken           string
+} -->
