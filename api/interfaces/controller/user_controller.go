@@ -48,7 +48,7 @@ func (t *userController) Index(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "index.html", gin.H{
 		"user": user,
 	})
 }
