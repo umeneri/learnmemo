@@ -23,12 +23,12 @@ func GetUserId() int64 {
 	return 1
 }
 
-func WithSession(c *gin.Context) {
+func AuthRequired(c *gin.Context) {
 	log.Println("with session")
 
 	user, err := GetUser(c)
 	if user.UserID == "" {
-		c.Redirect(http.StatusTemporaryRedirect, "/user/v1/login")
+		c.Redirect(http.StatusTemporaryRedirect, "/user/login")
 	} else if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 	} else {

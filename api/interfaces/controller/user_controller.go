@@ -5,7 +5,6 @@ import (
 	"api/usecase"
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -35,15 +34,12 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 
 func init() {
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3000/user/v1/callback/google"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3000/user/callback/google"),
 	)
 }
 
 func (t *userController) Index(c *gin.Context) {
 	user, err := auth.GetUser(c)
-
-	log.Println("index")
-	log.Println(user)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
@@ -62,7 +58,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		auth.SaveSession(user, c)
-		c.Redirect(http.StatusTemporaryRedirect, "/user/v1/me")
+		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")
 		c.Request = contextWithProviderName(c, provider)
@@ -82,12 +78,12 @@ func (t *userController) Callback(c *gin.Context) {
 
 	auth.SaveSession(user, c)
 
-	c.Redirect(http.StatusTemporaryRedirect, "/user/v1/me")
+	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
 
 func (t *userController) Logout(c *gin.Context) {
 	auth.DeleteSession(c)
-	c.Redirect(http.StatusTemporaryRedirect, "/user/v1/login")
+	c.Redirect(http.StatusTemporaryRedirect, "/user/login")
 }
 
 func contextWithProviderName(c *gin.Context, provider string) *http.Request {

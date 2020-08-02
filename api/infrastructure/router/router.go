@@ -23,17 +23,13 @@ func SetupRoute(taskController controller.TaskController, userController control
 		}
 	}
 
+	engine.GET("/", auth.AuthRequired, userController.Index)
 	userRoute := engine.Group("/user")
 	{
-		v1 := userRoute.Group("/v1")
-		{
-			v1.GET("/login", userController.LoginIndex)
-			v1.GET("/auth/:provider", userController.Login)
-			v1.GET("/callback/:provider", userController.Callback)
-			v1.GET("/logout", userController.Logout)
-	    v1.GET("/me", auth.WithSession, userController.Index)
-
-		}
+			userRoute.GET("/login", userController.LoginIndex)
+			userRoute.GET("/auth/:provider", userController.Login)
+			userRoute.GET("/callback/:provider", userController.Callback)
+			userRoute.GET("/logout", userController.Logout)
 	}
 	return engine
 
