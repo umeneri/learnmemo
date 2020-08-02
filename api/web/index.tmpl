@@ -1,13 +1,16 @@
 <html>
-  <p>logined user </p>
-  <ul class="user">
-    <li>{{.user.UserID}}</li>
-    <li>{{.user.Email}}</li>
-    <li>{{.user.AvatarURL}}</li>
-    <li>{{.user.Name}}</li>
-  </ul>
+	<body>
+		<p>logined user </p>
+		<ul class="user">
+			<li>{{.user.UserID}}</li>
+			<li>{{.user.Email}}</li>
+			<li>{{.user.AvatarURL}}</li>
+			<li>{{.user.Name}}</li>
+		</ul>
+		<p><a href="/user/v1/logout">logout</a></p>
   </body>
 </html>
+
 <!--
 type User struct {
 	RawData           map[string]interface{}

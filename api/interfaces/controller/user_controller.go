@@ -1,16 +1,15 @@
 package controller
 
 import (
-	"api/usecase"
 	"api/interfaces/auth"
+	"api/usecase"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
-	"github.com/lunny/log"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
@@ -21,20 +20,12 @@ type UserController interface {
 	LoginIndex(c *gin.Context)
 	Login(c *gin.Context)
 	Callback(c *gin.Context)
+	Logout(c *gin.Context)
 }
 
 type userController struct {
 	userUseCase usecase.UserUseCase
 }
-
-var (
-	// キーの長さは 16, 24, 32 バイトのいずれかでなければならない。
-	// (AES-128, AES-192 or AES-256)
-	key   = []byte("super-secret-key")
-	store = sessions.NewCookieStore(key)
-	cookieName = "taskball"
-	userKey = "auth"
-)
 
 func NewUserController(useCase usecase.UserUseCase) UserController {
 	return &userController{
@@ -49,17 +40,19 @@ func init() {
 }
 
 func (t *userController) Index(c *gin.Context) {
-	session, _ := store.Get(c.Request, cookieName)
+	user, err := auth.GetUser(c)
 
-	if user, ok := session.Values[userKey].(goth.User); !ok || user.UserID == "" {
-		log.Println(user)
-		c.String(http.StatusForbidden, "Forbidden")
-	} else {
-		log.Println(user)
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"user": user,
-		})
+	log.Println("index")
+	log.Println(user)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
 	}
+
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"user": user,
+	})
 }
 
 func (t *userController) LoginIndex(c *gin.Context) {
@@ -69,7 +62,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		auth.SaveSession(user, c)
-		c.Redirect(http.StatusTemporaryRedirect, "/")
+		c.Redirect(http.StatusTemporaryRedirect, "/user/v1/me")
 	} else {
 		provider := c.Param("provider")
 		c.Request = contextWithProviderName(c, provider)
@@ -87,11 +80,14 @@ func (t *userController) Callback(c *gin.Context) {
 		return
 	}
 
-	log.Println(user)
-
 	auth.SaveSession(user, c)
 
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	c.Redirect(http.StatusTemporaryRedirect, "/user/v1/me")
+}
+
+func (t *userController) Logout(c *gin.Context) {
+	auth.DeleteSession(c)
+	c.Redirect(http.StatusTemporaryRedirect, "/user/v1/login")
 }
 
 func contextWithProviderName(c *gin.Context, provider string) *http.Request {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 
 	"testing"
 
@@ -21,15 +22,29 @@ func TestSaveSession(t *testing.T) {
 	user := goth.User{
 		Email: "hoge@gmail.com",
 	}
-	fmt.Println(c)
-	fmt.Println(user)
 	auth.SaveSession(user, c)
+
+	resopnseHeader := c.Writer.Header()
+	str := resopnseHeader.Get("Set-Cookie")
+
+	if str == "" {
+		t.Fatalf("cannot get session value")
+	}
+}
+
+func TestDeleteSession(t *testing.T) {
+	resp := httptest.NewRecorder()
+	gin.SetMode(gin.TestMode)
+	c, _ := gin.CreateTestContext(resp)
+	c.Request, _ = http.NewRequest("GET", "/", nil)
+
+	auth.DeleteSession(c)
 
 	resopnseHeader := c.Writer.Header()
 	str := resopnseHeader.Get("Set-Cookie")
 	fmt.Println(str)
 
-	if str == "" {
-		t.Fatalf("cannot get session value")
+	if strings.Index(str, "Max-Age=0") == -1 {
+		t.Fatalf("session value is not deleted")
 	}
 }

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"api/interfaces/auth"
 	"api/interfaces/controller"
 	// "api/interfaces/middleware"
 
@@ -22,8 +23,6 @@ func SetupRoute(taskController controller.TaskController, userController control
 		}
 	}
 
-	engine.GET("/", userController.Index)
-
 	userRoute := engine.Group("/user")
 	{
 		v1 := userRoute.Group("/v1")
@@ -31,6 +30,9 @@ func SetupRoute(taskController controller.TaskController, userController control
 			v1.GET("/login", userController.LoginIndex)
 			v1.GET("/auth/:provider", userController.Login)
 			v1.GET("/callback/:provider", userController.Callback)
+			v1.GET("/logout", userController.Logout)
+	    v1.GET("/me", auth.WithSession, userController.Index)
+
 		}
 	}
 	return engine

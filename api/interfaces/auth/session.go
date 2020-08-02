@@ -3,6 +3,7 @@ package auth
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
@@ -22,9 +23,24 @@ func GetUserId() int64 {
 	return 1
 }
 
+func WithSession(c *gin.Context) {
+	log.Println("with session")
+
+	user, err := GetUser(c)
+	if user.UserID == "" {
+		c.Redirect(http.StatusTemporaryRedirect, "/user/v1/login")
+	} else if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+	} else {
+		c.Next()
+	}
+}
+
 func GetUser(c *gin.Context) (goth.User, error) {
 	session, _ := store.Get(c.Request, cookieName)
 	user, ok := session.Values[userKey].(goth.User)
+
+	log.Println(user)
 
 	if !ok {
 		err := fmt.Errorf("cannot get session value")
@@ -35,9 +51,13 @@ func GetUser(c *gin.Context) (goth.User, error) {
 }
 
 func SaveSession(user goth.User, c *gin.Context) {
-	log.Println(c.Request)
-	log.Println(c.Writer)
 	session, _ := store.Get(c.Request, cookieName)
-	session.Values["authenticated"] = user
+	session.Values[userKey] = user
+	session.Save(c.Request, c.Writer)
+}
+
+func DeleteSession(c *gin.Context) {
+	session, _ := store.Get(c.Request, cookieName)
+	session.Options.MaxAge = -1
 	session.Save(c.Request, c.Writer)
 }
