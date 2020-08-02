@@ -35,6 +35,7 @@ require (
 	github.com/yuin/goldmark v1.2.0 // indirect
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect
 	golang.org/x/tools v0.0.0-20200724172932-b5fc9d354d99 // indirect
 	google.golang.org/appengine v1.6.6 // indirect

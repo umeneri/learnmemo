@@ -47,6 +47,17 @@ func TestAddTask(t *testing.T) {
 	checkResponseHeader(t, resp, 201)
 }
 
+func TestUserIndex(t *testing.T) {
+	resp, err := http.Get(fmt.Sprintf("%s/user/v1/index", ts.URL))
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("Expected status code %d, got %v", 200, resp.StatusCode)
+	}
+}
+
 func setup() {
 	engine := setupServer("test")
 	ts = httptest.NewServer(engine)
