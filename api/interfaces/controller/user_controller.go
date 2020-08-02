@@ -40,10 +40,10 @@ func init() {
 
 // func (t *userController)
 func (t *userController) Index(c *gin.Context) {
-	user, err := auth.GetUser(c)
-	// t.userUseCase.FindUser()
+	gothUser, err := auth.GetUser(c)
+	user := t.userUseCase.FindByEmail(gothUser.Email)
 
-	if err != nil {
+	if user == nil || err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 		return
 	}
@@ -60,7 +60,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		auth.SaveSession(user, c)
-		// t.userUseCase.LoginUser(user)
+		t.userUseCase.LoginUser(convertToSocialLoginUser(user))
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")

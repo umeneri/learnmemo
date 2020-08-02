@@ -3,6 +3,7 @@ package usecase
 import (
 	"api/domain/model"
 	"api/domain/repository"
+	"time"
 )
 
 type SocialLoginUser struct {
@@ -13,6 +14,7 @@ type SocialLoginUser struct {
 
 type UserUseCase interface {
 	LoginUser(user SocialLoginUser) (*model.User, error)
+	FindByEmail(email string) *model.User
 }
 
 type userUseCase struct {
@@ -33,11 +35,18 @@ func (t *userUseCase) LoginUser(socialLoginUser SocialLoginUser) (*model.User, e
 	}
 
 	user = &model.User{
+		Email:      socialLoginUser.Email,
+		Name:       socialLoginUser.UserID,
 		ProviderId: socialLoginUser.UserID,
-		Email: socialLoginUser.Email,
-		AvaterUrl: socialLoginUser.AvatarURL,
+		AvatarUrl:  socialLoginUser.AvatarURL,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
 
 	user, err := t.userRepository.SaveUser(user)
 	return user, err
+}
+
+func (t *userUseCase) FindByEmail(email string) *model.User {
+	 return t.userRepository.FindByEmail(email)
 }
