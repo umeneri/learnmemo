@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -49,13 +48,14 @@ func TestAddTask(t *testing.T) {
 }
 
 func TestUserIndex(t *testing.T) {
-	resp, err := http.Get(fmt.Sprintf("%s/user/v1/index", ts.URL))
+	resp, err := http.Get(fmt.Sprintf("%s/", ts.URL))
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	if resp.StatusCode != 200 {
-		t.Fatalf("Expected status code %d, got %v", 200, resp.StatusCode)
+	expectedCode := 403
+	if resp.StatusCode != expectedCode {
+		t.Fatalf("Expected status code %d, got %v", expectedCode, resp.StatusCode)
 	}
 }
 

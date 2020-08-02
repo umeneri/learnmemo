@@ -2,6 +2,7 @@ package controller
 
 import (
 	"api/usecase"
+	"api/interfaces/auth"
 	"context"
 	"fmt"
 	"net/http"
@@ -32,6 +33,7 @@ var (
 	key   = []byte("super-secret-key")
 	store = sessions.NewCookieStore(key)
 	cookieName = "taskball"
+	userKey = "auth"
 )
 
 func NewUserController(useCase usecase.UserUseCase) UserController {
@@ -49,7 +51,7 @@ func init() {
 func (t *userController) Index(c *gin.Context) {
 	session, _ := store.Get(c.Request, cookieName)
 
-	if user, ok := session.Values["authenticated"].(goth.User); !ok || user.UserID == "" {
+	if user, ok := session.Values[userKey].(goth.User); !ok || user.UserID == "" {
 		log.Println(user)
 		c.String(http.StatusForbidden, "Forbidden")
 	} else {
@@ -65,8 +67,8 @@ func (t *userController) LoginIndex(c *gin.Context) {
 }
 
 func (t *userController) Login(c *gin.Context) {
-	if gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
-		log.Println(gothUser)
+	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
+		auth.SaveSession(user, c)
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")
@@ -87,9 +89,7 @@ func (t *userController) Callback(c *gin.Context) {
 
 	log.Println(user)
 
-	session, _ := store.Get(c.Request, cookieName)
-	session.Values["authenticated"] = user
-	session.Save(c.Request, c.Writer)
+	auth.SaveSession(user, c)
 
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
