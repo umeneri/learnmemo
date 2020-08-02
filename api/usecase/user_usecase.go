@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"api/domain/model"
 	"api/domain/repository"
 )
 
@@ -11,7 +12,7 @@ type SocialLoginUser struct {
 }
 
 type UserUseCase interface {
-	LoginUser(user SocialLoginUser) error
+	LoginUser(user SocialLoginUser) (*model.User, error)
 }
 
 type userUseCase struct {
@@ -24,7 +25,19 @@ func NewUserUseCase(userRepository repository.UserRepository) UserUseCase {
 	}
 }
 
-func (t *userUseCase) LoginUser(user SocialLoginUser) error {
-	// return t.userRepository.(User)
-	return nil
+func (t *userUseCase) LoginUser(socialLoginUser SocialLoginUser) (*model.User, error) {
+	user := t.userRepository.FindByEmail(socialLoginUser.Email)
+
+	if user != nil {
+		return user, nil
+	}
+
+	user = &model.User{
+		ProviderId: socialLoginUser.UserID,
+		Email: socialLoginUser.Email,
+		AvaterUrl: socialLoginUser.AvatarURL,
+	}
+
+	user, err := t.userRepository.SaveUser(user)
+	return user, err
 }

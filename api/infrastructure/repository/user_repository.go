@@ -16,14 +16,14 @@ func NewUserRepository(dbName string) repository.UserRepository {
 	return &userRepository{dbEngine}
 }
 
-func (t *userRepository) FindById(id int) model.User {
-	return model.User{}
+func (t *userRepository) FindByEmail(email string) *model.User {
+	return &model.User{}
 }
 
-func (t *userRepository) SetUser(user *model.User) error {
+func (t *userRepository) SaveUser(user *model.User) (*model.User, error) {
 	_, err := t.dbEngine.Insert(user)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }

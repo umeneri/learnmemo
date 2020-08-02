@@ -53,7 +53,7 @@ func TestUserIndex(t *testing.T) {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	expectedCode := 403
+	expectedCode := 200
 	if resp.StatusCode != expectedCode {
 		t.Fatalf("Expected status code %d, got %v", expectedCode, resp.StatusCode)
 	}

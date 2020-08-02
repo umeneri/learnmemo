@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `provider_id` varchar(100) NOT NULL,
+  `avater_url` varchar(255) NOT NULL,
   `created_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
