@@ -59,7 +59,7 @@ func TestLoginUser(t *testing.T) {
 		AvatarURL: "http://hoge.example.com",
 	}
 
-	mockUserRepository := mockUserRepository{}
+	mockUserRepository := mockLoginUserRepository{}
 	usecase := usecase.NewUserUseCase(&mockUserRepository)
 
 	user, err := usecase.LoginUser(socialLoginUser)
@@ -69,6 +69,22 @@ func TestLoginUser(t *testing.T) {
 
 	if user.Email != "hoge@gmail.com" {
 		t.Fatalf("login user error")
+	}
+}
+
+func TestFindByEmail(t *testing.T) {
+	socialLoginUser := usecase.SocialLoginUser{
+		UserID: "hoge",
+		Email: "hoge@gmail.com",
+		AvatarURL: "http://hoge.example.com",
+	}
+
+	mockUserRepository := mockLoginUserRepository{}
+	usecase := usecase.NewUserUseCase(&mockUserRepository)
+
+	user := usecase.FindByEmail(socialLoginUser.Email)
+	if user == nil || user.Email != "hoge@gmail.com" {
+		t.Fatalf("find user error")
 	}
 }
 

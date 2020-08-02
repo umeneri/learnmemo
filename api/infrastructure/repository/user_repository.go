@@ -17,7 +17,17 @@ func NewUserRepository(dbName string) repository.UserRepository {
 }
 
 func (t *userRepository) FindByEmail(email string) *model.User {
-	return &model.User{}
+	user := &model.User{}
+	ok, err := t.dbEngine.Table("user").Where("email = ?", email).Get(user)
+
+	if !ok {
+		return nil
+	}
+
+	if err != nil {
+		panic(err)
+	}
+	return user
 }
 
 func (t *userRepository) SaveUser(user *model.User) (*model.User, error) {
