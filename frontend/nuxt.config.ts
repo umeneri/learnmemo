@@ -19,5 +19,13 @@ export default {
     "@nuxtjs/axios",
     "@nuxtjs/vuetify"
   ],
-  axios: {}
+  axios: {},
+  vuetify: {
+    // defaultAssets: {
+    //   font: {
+    //     family: 'Roboto'
+    //   },
+    //   icons: 'mdi'
+    // }
+  }
 }
