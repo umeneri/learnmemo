@@ -18,6 +18,7 @@
     "generate": "nuxt-ts build --target static && nuxt-ts export"
   },
   "devDependencies": {
+    "@mdi/js": "^5.4.55",
     "@nuxt/types": "2.13.3",
     "@nuxt/typescript-build": "2.0.2"
   }
