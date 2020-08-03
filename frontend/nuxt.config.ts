@@ -17,6 +17,7 @@ export default {
   buildModules: ["@nuxt/typescript-build"],
   modules: [
     "@nuxtjs/axios",
+    "@nuxtjs/vuetify"
   ],
   axios: {}
 }
