@@ -22,7 +22,7 @@
     },
     "types": [
       "@nuxt/types",
-      "@nuxtjs/axios"
+      "@nuxtjs/axios",
     ]
   }
 }
