@@ -2,8 +2,8 @@ package controller
 
 import (
 	"api/domain/model"
-	"api/usecase"
 	"api/interfaces/auth"
+	"api/usecase"
 	"log"
 	"net/http"
 	"strconv"
@@ -24,9 +24,9 @@ type taskController struct {
 }
 
 type TaskForm struct {
-	Title          string `json:"title" binding:"required"`
-	ProgressMinute int64  `json:"progressMinute" binding:"required"`
-	Status         int    `json:"status" binding:"required"`
+	Title       string `json:"title" binding:"required"`
+	ElapsedTime int64  `json:"ElapsedTime" binding:"required"`
+	Status      int    `json:"status" binding:"required"`
 }
 
 func NewTaskController(useCase usecase.TaskUseCase) TaskController {
@@ -42,12 +42,12 @@ func (t *taskController) AddTask(c *gin.Context) {
 	log.Println(err)
 
 	task := model.Task{
-		UserId:         auth.GetUserId(),
-		Title:          taskForm.Title,
-		ProgressMinute: taskForm.ProgressMinute,
-		Status:         taskForm.Status,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
+		UserId:      auth.GetUserId(),
+		Title:       taskForm.Title,
+		ElapsedTime: taskForm.ElapsedTime,
+		Status:      taskForm.Status,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	if err != nil {
@@ -69,7 +69,7 @@ func (t *taskController) AddTask(c *gin.Context) {
 
 func (t *taskController) ListTask(c *gin.Context) {
 	taskLists := t.taskUseCase.GetTaskList()
-	c.JSONP(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 		"data":    taskLists,
 	})
@@ -89,11 +89,11 @@ func (t *taskController) UpdateTask(c *gin.Context) {
 	log.Println(err)
 
 	task := model.Task{
-		Id:             intId,
-		Title:          taskForm.Title,
-		ProgressMinute: taskForm.ProgressMinute,
-		Status:         taskForm.Status,
-		UpdatedAt:      time.Now(),
+		Id:          intId,
+		Title:       taskForm.Title,
+		ElapsedTime: taskForm.ElapsedTime,
+		Status:      taskForm.Status,
+		UpdatedAt:   time.Now(),
 	}
 
 	if err != nil {

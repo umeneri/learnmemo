@@ -17,7 +17,7 @@ TRUNCATE TABLE `task`;
 --   `id` bigint(20) unsigned NOT NULL auto_increment,
 --   `user_id` bigint(20) NOT NULL REFERENCES `users`(`id`),
 --   `title` varchar(60) NOT NULL,
---   `progress_minute` bigint(20) NOT NULL,
+--   `elapsed_time` bigint(20) NOT NULL,
 --   `status` tinyint NOT NULL,
 --   `created_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
 --   `updated_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
@@ -36,16 +36,16 @@ insert into user (email, name, provider_id, avatar_url) values ('user7@gmail.com
 insert into user (email, name, provider_id, avatar_url) values ('user8@gmail.com', 'user8', '8', '');
 insert into user (email, name, provider_id, avatar_url) values ('user9@gmail.com', 'user9', '9', '');
 
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 0, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 1, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 2, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 3, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 4, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 5, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 6, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 7, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 8, 1);
-insert into task (user_id, title, progress_minute, status) values (1, '腹筋', 9, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 0, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 1, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 2, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 3, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 4, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 5, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 6, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 7, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 8, 1);
+insert into task (user_id, title, elapsed_time, status) values (1, '腹筋', 9, 1);
 
 
 
