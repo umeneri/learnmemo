@@ -26,6 +26,7 @@
       </v-list>
     </v-navigation-drawer>
 
+
     <v-main class="bar-container">
       <p class="title">
         This year progress
