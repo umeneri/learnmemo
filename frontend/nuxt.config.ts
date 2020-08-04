@@ -17,15 +17,18 @@ export default {
   buildModules: ["@nuxt/typescript-build"],
   modules: [
     "@nuxtjs/axios",
-    "@nuxtjs/vuetify"
+    "@nuxtjs/vuetify",
+    "@nuxtjs/proxy",
   ],
-  axios: {},
-  vuetify: {
-    // defaultAssets: {
-    //   font: {
-    //     family: 'Roboto'
-    //   },
-    //   icons: 'mdi'
-    // }
+  axios: {
+    prefix: "/api",
+  },
+  proxy: {
+    "/api": {
+      target: "http://localhost:3030",
+      pathRewrite: {
+        "^/api": "/"
+      }
+    }
   }
 }

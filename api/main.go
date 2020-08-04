@@ -25,5 +25,5 @@ func setupServer(env string) *gin.Engine {
 }
 
 func main() {
-	setupServer("dev").Run(":3000")
+	setupServer("dev").Run(":3030")
 }
