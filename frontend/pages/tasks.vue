@@ -8,14 +8,13 @@
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-toolbar-title>Task List</v-toolbar-title>
+          <v-toolbar-title>学習記録</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
-                >New Task</v-btn
-              >
+                >新しい記録</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -28,13 +27,13 @@
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
                         v-model="editedTask.title"
-                        label="Title"
+                        label="タイトル"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
                         v-model="editedTask.elapsedTime"
-                        label="Elapsed Time"
+                        label="学習時間"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -43,8 +42,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                <v-btn color="blue darken-1" text @click="close">キャンセル</v-btn>
+                <v-btn color="blue darken-1" text @click="save">保存</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -59,7 +58,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="primary" @click="initialize">リセット</v-btn>
       </template>
     </v-data-table>
   </v-app>
@@ -69,9 +68,12 @@
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
 
 interface Task {
+  id: number
   title: string
   elapsedTime: number
+  status: number
   createdAt: string
+  updatedAt: string
 }
 
 @Component({
@@ -81,30 +83,36 @@ export default class DataTable extends Vue {
   dialog = false
   headers = [
     {
-      text: 'Title',
+      text: 'タイトル',
       align: 'start',
       sortable: false,
       value: 'title',
     },
-    { text: 'ElapsedTime', value: 'elapsedTime' },
-    { text: 'CreatedAt', value: 'createdAt' },
-    { text: 'Actions', value: 'actions', sortable: false },
+    { text: '学習時間', value: 'elapsedTime' },
+    { text: '作成日', value: 'createdAt' },
+    { text: 'アクション', value: 'actions', sortable: false },
   ]
   tasks: Array<Task> = []
   editedIndex = -1
   editedTask: Task = {
+    id: 0,
     title: '',
     elapsedTime: 0,
+    status: 0,
     createdAt: '2020/08/01',
+    updatedAt: '2020/08/01',
   }
   defaultTask: Task = {
+    id: 0,
     title: '',
     elapsedTime: 0,
+    status: 0,
     createdAt: '2020/08/01',
+    updatedAt: '2020/08/01',
   }
 
   get formTitle() {
-    return this.editedIndex === -1 ? 'New Task' : 'Edit Task'
+    return this.editedIndex === -1 ? '新しい記録' : '編集'
   }
 
   @Watch('dialog')
@@ -116,44 +124,19 @@ export default class DataTable extends Vue {
     this.initialize()
   }
 
-  initialize() {
-    this.tasks = [
-      {
-        title: 'Frozen Yogurt',
-        elapsedTime: 159,
-        createdAt: '2020/08/01',
-      },
-      {
-        title: 'Ice cream sandwich',
-        elapsedTime: 237,
-        createdAt: '2020/08/01',
-      },
-      {
-        title: 'Eclair',
-        elapsedTime: 262,
-        createdAt: '2020/08/01',
-      },
-      {
-        title: 'Cupcake',
-        elapsedTime: 305,
-        createdAt: '2020/08/01',
-      },
-      {
-        title: 'Gingerbread',
-        elapsedTime: 356,
-        createdAt: '2020/08/01',
-      },
-      {
-        title: 'Jelly bean',
-        elapsedTime: 375,
-        createdAt: '2020/08/01',
-      },
-    ]
+  async initialize() {
+    try {
+      const response = await this.$axios.$get('/task/v1/list')
+      console.log(response.data)
+      this.tasks = response.data
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   editTask(task: Task) {
     console.log(task);
-    
+
     this.editedIndex = this.tasks.indexOf(task)
     this.editedTask = Object.assign({}, task)
     this.dialog = true

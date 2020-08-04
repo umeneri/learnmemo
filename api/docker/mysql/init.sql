@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `id` bigint(20) unsigned NOT NULL auto_increment,
   `user_id` bigint(20) NOT NULL REFERENCES `users`(`id`),
   `title` varchar(60) NOT NULL,
-  `progress_minute` bigint(20) NOT NULL,
+  `elapsed_time` bigint(20) NOT NULL,
   `status` tinyint NOT NULL,
   `created_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,

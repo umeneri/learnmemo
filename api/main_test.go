@@ -33,9 +33,9 @@ func TestListTask(t *testing.T) {
 
 func TestAddTask(t *testing.T) {
 	requestBody, err := json.Marshal(map[string]interface{}{
-		"title":          "title1",
-		"progressMinute": 10,
-		"status":         1,
+		"title":       "title1",
+		"ElapsedTime": 10,
+		"status":      1,
 	})
 
 	resp, err := http.Post(fmt.Sprintf("%s/task/v1/add", ts.URL), "application/json", bytes.NewBuffer(requestBody))
