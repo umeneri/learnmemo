@@ -25,8 +25,8 @@ type taskController struct {
 
 type TaskForm struct {
 	Title       string `json:"title" binding:"required"`
-	ElapsedTime int64  `json:"ElapsedTime" binding:"required"`
-	Status      int    `json:"status" binding:"required"`
+	ElapsedTime int64  `json:"elapsedTime" binding:"min=0"`
+	Status      int    `json:"status" binding:"min=0"`
 }
 
 func NewTaskController(useCase usecase.TaskUseCase) TaskController {
