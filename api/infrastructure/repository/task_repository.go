@@ -26,7 +26,7 @@ func (t *taskRepository) SetTask(task *model.Task) error {
 
 func (t *taskRepository) GetTaskList() []model.Task {
 	tasks := make([]model.Task, 0)
-	err := t.dbEngine.Limit(10, 0).Find(&tasks)
+	err := t.dbEngine.Limit(20, 0).Find(&tasks)
 	if err != nil {
 		panic(err)
 	}
