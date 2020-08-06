@@ -3,19 +3,12 @@
     <v-app-bar app>
       <v-toolbar-title>LearnMemo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="my-10" outlined color="blue" depressed theme="light" primary="text" href="/tasks">ログイン</v-btn>
+      <v-btn class="my-10" outlined color="blue" depressed theme="light" primary="text" href="/login">ログイン</v-btn>
     </v-app-bar>
-
-    <!-- <v-row align="center" justify="center">
-      <v-col class="text-center" cols="12">
-        <h1 class="display-1 font-weight-thin mb-4">Vuetify.js</h1>
-        <h4 class="subheading">Build your application today!</h4>
-      </v-col>
-    </v-row> -->
 
     <v-main class="relative">
       <v-responsive class="movie">
-        <video autoplay loop muted src="study.mp4"></video>
+        <video autoplay loop muted src="https://res.cloudinary.com/dmqxwobws/video/upload/v1596726217/study_zshdsf.mp4"></video>
       </v-responsive>
 
       <v-container class="fill-height content" fluid>
@@ -23,7 +16,7 @@
           <v-col class="text-center" cols="12">
             <h1 class="text-h1 py-4">学び続けよう。</h1>
             <h2 class="py-3">LearnMemoは学習を記録して成長を可視化するサービスです。</h2>
-            <v-btn class="my-10" flat large depressed rounded theme="light" primary="text" color="primary" href="/tasks">Googleアカウントで始める</v-btn>
+            <v-btn class="my-10" large depressed rounded theme="light" primary="text" color="primary" href="/api/user/auth/google">Googleアカウントで始める</v-btn>
           </v-col>
         </v-row>
       </v-container>
