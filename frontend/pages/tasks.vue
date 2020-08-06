@@ -3,7 +3,8 @@
     <v-data-table
       :headers="headers"
       :items="tasks"
-      sort-by="elapsedTime"
+      sort-by="createdAt"
+      sort-desc
       class="elevation-1"
     >
       <template v-slot:top>
@@ -33,12 +34,21 @@
                           placeholder="英単語"
                           :rules="titleRules"
                           required
-                          maxlength=100
+                          maxlength="100"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model.number="editedTask.elapsedTime"
+                          v-model.number="editedTask.elapsedTimeHours"
+                          label="学習時間(時)"
+                          placeholder="1"
+                          type="number"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model.number="editedTask.elapsedTimeMinutes"
                           label="学習時間(分)"
                           placeholder="30"
                           type="number"
@@ -75,6 +85,9 @@
           mdi-delete
         </v-icon>
       </template>
+      <template v-slot:item.elapsedTime="{ item }">
+        <span>{{ getFormatedElapsedTime(item.elapsedTime) }}</span>
+      </template>
       <template v-slot:item.createdAt="{ item }">
         <span>{{ getFormatedDate(item.createdAt) }}</span>
       </template>
@@ -97,11 +110,20 @@ interface Task {
   updatedAt: string
 }
 
+interface EditedTask {
+  id: number
+  title: string
+  elapsedTimeHours: number
+  elapsedTimeMinutes: number
+  status: number
+  createdAt: string
+  updatedAt: string
+}
+
 @Component({
   components: {},
 })
 export default class DataTable extends Vue {
-  dialog = false
   headers = [
     {
       text: 'タイトル',
@@ -113,33 +135,96 @@ export default class DataTable extends Vue {
     { text: '作成日', value: 'createdAt' },
     { text: 'アクション', value: 'actions', sortable: false },
   ]
-  tasks: Array<Task> = []
-  editedIndex = -1
-  editedTask: Task = {
-    id: 0,
-    title: '',
-    elapsedTime: 0,
-    status: 0,
-    createdAt: new Date().toLocaleString(),
-    updatedAt: new Date().toLocaleString(),
-  }
-  defaultTask: Task = {
-    id: 0,
-    title: '',
-    elapsedTime: 0,
-    status: 0,
-    createdAt: new Date().toLocaleString(),
-    updatedAt: new Date().toLocaleString(),
-  }
-
-  valid = true
   titleRules: Array<any> = [
     (v: string) => !!v || 'タイトルが未入力です',
     (v: string) => v.length <= 100 || 'タイトルは100文字以内です',
   ]
+  defaultTask: EditedTask = {
+    id: 0,
+    title: '',
+    elapsedTimeHours: 0,
+    elapsedTimeMinutes: 0,
+    status: 0,
+    createdAt: new Date().toLocaleString(),
+    updatedAt: new Date().toLocaleString(),
+  }
+
+  dialog = false
+  valid = true
+  tasks: Array<Task> = []
+  editedIndex = -1
+  editedTask: EditedTask = {
+    id: 0,
+    title: '',
+    elapsedTimeHours: 0,
+    elapsedTimeMinutes: 0,
+    status: 0,
+    createdAt: new Date().toLocaleString(),
+    updatedAt: new Date().toLocaleString(),
+  }
 
   get formTitle() {
     return this.editedIndex === -1 ? '新しい記録' : '編集'
+  }
+
+  getFormatedDate(d: string) {
+    const date = new Date(d)
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+  }
+
+  getFormatedElapsedTime(elapsedTime: number) {
+    const elapsedTimeHours = Math.floor(elapsedTime / 60)
+    const elapsedTimeMinutes = Math.floor(elapsedTime % 60)
+    if (elapsedTimeHours === 0) {
+      return `${elapsedTimeMinutes}分`
+    }
+    return `${elapsedTimeHours}時間${elapsedTimeMinutes}分`
+  }
+
+  created() {
+    this.initialize()
+  }
+
+  async initialize() {
+    try {
+      const response = await this.$axios.$get('/task/v1/list')
+      console.log(response.data)
+      this.tasks = response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  taskToEditedTask(task: Task): EditedTask {
+    const task2 = Object.assign({}, task)
+    return {
+      ...task2,
+      elapsedTimeHours: Math.floor(task2.elapsedTime / 60),
+      elapsedTimeMinutes: Math.floor(task2.elapsedTime % 60),
+    }
+  }
+
+  editedTaskToTask(editedTask: EditedTask): Task {
+    const task = Object.assign({}, editedTask)
+    return {
+      ...task,
+      elapsedTime: task.elapsedTimeHours * 60 + task.elapsedTimeMinutes,
+    }
+  }
+
+  editTask(task: Task) {
+    this.editedIndex = this.tasks.indexOf(task)
+    this.editedTask = this.taskToEditedTask(task)
+    this.dialog = true
+  }
+
+  deleteTask(task: Task) {
+    const index = this.tasks.indexOf(task)
+    const b = confirm('Are you sure you want to delete this task?')
+    if (b) {
+      this.tasks.splice(index, 1)
+      this.sendDeleteTask(task)
+    }
   }
 
   @Watch('dialog')
@@ -147,13 +232,26 @@ export default class DataTable extends Vue {
     val || this.close()
   }
 
-  created() {
-    this.initialize()
+  close() {
+    this.dialog = false
+    this.$nextTick(() => {
+      this.editedTask = Object.assign({}, this.defaultTask)
+      this.editedIndex = -1
+    })
   }
 
-  getFormatedDate(d: string) {
-    const date = new Date(d)
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+  save() {
+    if (this.editedIndex > -1) {
+      const t = this.editedTaskToTask(this.editedTask)
+      Object.assign(this.tasks[this.editedIndex], t)
+      console.log(t)
+      this.sendEditedTask(t)
+    } else {
+      const t = this.editedTaskToTask(this.editedTask)
+      this.tasks.push(t)
+      this.sendInitialTask(t)
+    }
+    this.close()
   }
 
   async sendInitialTask(task: Task) {
@@ -184,51 +282,6 @@ export default class DataTable extends Vue {
     } catch (error) {
       console.log(error)
     }
-  }
-
-  async initialize() {
-    try {
-      const response = await this.$axios.$get('/task/v1/list')
-      console.log(response.data)
-      this.tasks = response.data
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  editTask(task: Task) {
-    this.editedIndex = this.tasks.indexOf(task)
-    this.editedTask = Object.assign({}, task)
-    this.dialog = true
-  }
-
-  deleteTask(task: Task) {
-    const index = this.tasks.indexOf(task)
-    const b = confirm('Are you sure you want to delete this task?')
-    if (b) {
-      this.tasks.splice(index, 1)
-      this.sendDeleteTask(task)
-    }
-  }
-
-  close() {
-    this.dialog = false
-    this.$nextTick(() => {
-      this.editedTask = Object.assign({}, this.defaultTask)
-      this.editedIndex = -1
-    })
-  }
-
-  save() {
-    if (this.editedIndex > -1) {
-      Object.assign(this.tasks[this.editedIndex], this.editedTask)
-      console.log(this.editedTask)
-      this.sendEditedTask(this.editedTask)
-    } else {
-      this.tasks.push(this.editedTask)
-      this.sendInitialTask(this.editedTask)
-    }
-    this.close()
   }
 }
 </script>
