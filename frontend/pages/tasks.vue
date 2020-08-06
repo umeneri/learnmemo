@@ -18,7 +18,7 @@
               >
             </template>
             <v-card>
-              <v-form ref="form" v-model="valid" lazy-validation>
+              <v-form ref="form" v-model="valid">
                 <v-card-title>
                   <span class="headline">{{ formTitle }}</span>
                 </v-card-title>
@@ -33,6 +33,7 @@
                           placeholder="英単語"
                           :rules="titleRules"
                           required
+                          maxlength=100
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
@@ -141,13 +142,6 @@ export default class DataTable extends Vue {
     return this.editedIndex === -1 ? '新しい記録' : '編集'
   }
 
-  // get form(): VForm {
-  //   console.log("refs")
-  //   console.log(this.$refs)
-
-  //   return this.$refs.form as VForm
-  // }
-
   @Watch('dialog')
   OnDialogChange(val: boolean) {
     val || this.close()
@@ -225,14 +219,7 @@ export default class DataTable extends Vue {
     })
   }
 
-  // validate() {
-  //   // console.log(this.form)
-  //   return 0
-  // }
-
   save() {
-    // console.log(this.validate())
-
     if (this.editedIndex > -1) {
       Object.assign(this.tasks[this.editedIndex], this.editedTask)
       console.log(this.editedTask)
