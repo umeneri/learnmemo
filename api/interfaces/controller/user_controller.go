@@ -34,7 +34,7 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 
 func init() {
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3000/user/callback/google"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3030/api/user/callback/google"),
 	)
 }
 
