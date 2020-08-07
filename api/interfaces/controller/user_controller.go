@@ -87,7 +87,7 @@ func (t *userController) Callback(c *gin.Context) {
 
 func (t *userController) Logout(c *gin.Context) {
 	auth.DeleteSession(c)
-	c.Redirect(http.StatusTemporaryRedirect, "/user/login")
+	c.Redirect(http.StatusTemporaryRedirect, "/login")
 }
 
 func contextWithProviderName(c *gin.Context, provider string) *http.Request {

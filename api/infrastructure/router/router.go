@@ -12,7 +12,7 @@ func SetupRoute(taskController controller.TaskController, userController control
 	engine := gin.Default()
 	// engine.Use(middleware.RecordUaAndTime)
 	engine.LoadHTMLGlob("web/*")
-	taskRoute := engine.Group("/task")
+	taskRoute := engine.Group("/api/task")
 	{
 		v1 := taskRoute.Group("/v1")
 		{
@@ -23,10 +23,11 @@ func SetupRoute(taskController controller.TaskController, userController control
 		}
 	}
 
+	engine.GET("/login", userController.LoginIndex)
 	engine.GET("/", auth.AuthRequired, userController.Index)
-	userRoute := engine.Group("/user")
+
+	userRoute := engine.Group("/api/user")
 	{
-			userRoute.GET("/login", userController.LoginIndex)
 			userRoute.GET("/auth/:provider", userController.Login)
 			userRoute.GET("/callback/:provider", userController.Callback)
 			userRoute.GET("/logout", userController.Logout)
