@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestListTask(t *testing.T) {
-	resp, err := http.Get(fmt.Sprintf("%s/task/v1/list", ts.URL))
+	resp, err := http.Get(fmt.Sprintf("%s/api/task/v1/list", ts.URL))
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -34,11 +34,11 @@ func TestListTask(t *testing.T) {
 func TestAddTask(t *testing.T) {
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"title":       "title1",
-		"ElapsedTime": 10,
+		"elapsedTime": 10,
 		"status":      1,
 	})
 
-	resp, err := http.Post(fmt.Sprintf("%s/task/v1/add", ts.URL), "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(fmt.Sprintf("%s/api/task/v1/add", ts.URL), "application/json", bytes.NewBuffer(requestBody))
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)

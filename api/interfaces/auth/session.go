@@ -28,7 +28,7 @@ func AuthRequired(c *gin.Context) {
 
 	user, err := GetUser(c)
 	if user.UserID == "" {
-		c.Redirect(http.StatusTemporaryRedirect, "/user/login")
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	} else if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 	} else {
