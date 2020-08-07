@@ -1,34 +1,29 @@
 export default {
   env: {},
   head: {
-    title: "frontend",
+    title: 'frontend',
     meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { hid: "description", name: "description", content: "Nuxt.js TypeScript project" }
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Nuxt.js TypeScript project',
+      },
     ],
-    link: [
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
-  loading: { color: "#3B8070" },
+  loading: { color: '#3B8070' },
   // css: ["~/assets/css/main.css"],
   build: {},
-  buildModules: ["@nuxt/typescript-build"],
-  modules: [
-    "@nuxtjs/axios",
-    "@nuxtjs/vuetify",
-    "@nuxtjs/proxy",
-  ],
+  buildModules: ['@nuxt/typescript-build'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/vuetify', '@nuxtjs/proxy'],
   axios: {
-    prefix: "/api",
+    prefix: '/api',
   },
   proxy: {
-    "/api": {
-      target: "http://localhost:3030",
-      pathRewrite: {
-        "^/api": "/"
-      }
-    }
-  }
+    '/api': {
+      target: 'http://localhost:3030',
+    },
+  },
 }

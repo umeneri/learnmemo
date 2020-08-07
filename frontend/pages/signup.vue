@@ -3,7 +3,7 @@
     <v-app-bar app>
       <v-toolbar-title>LearnMemo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="my-10" outlined color="blue" depressed theme="light" primary="text" href="/login">ログイン</v-btn>
+      <v-btn class="my-10" outlined color="blue" depressed theme="light" primary="text" href="/api/user/auth/google">Googleアカウントでログイン</v-btn>
     </v-app-bar>
 
     <v-main class="relative">
