@@ -182,17 +182,7 @@ export default class DataTable extends Vue {
   }
 
   created() {
-    this.initialize()
-  }
-
-  async initialize() {
-    try {
-      const response = await this.$axios.$get('/task/v1/list')
-      console.log(response.data)
-      this.tasks = response.data
-    } catch (error) {
-      console.log(error)
-    }
+    this.fetchTaskList()
   }
 
   taskToEditedTask(task: Task): EditedTask {
@@ -252,6 +242,16 @@ export default class DataTable extends Vue {
       this.sendInitialTask(t)
     }
     this.close()
+  }
+
+  async fetchTaskList() {
+    try {
+      const response = await this.$axios.$get('/task/v1/list')
+      console.log(response.data)
+      this.tasks = response.data
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async sendInitialTask(task: Task) {
