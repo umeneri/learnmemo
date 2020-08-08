@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -25,5 +27,6 @@ func setupServer(env string) *gin.Engine {
 }
 
 func main() {
-	setupServer("dev").Run(":3030")
+	env := os.Getenv("ENV")
+	setupServer(env).Run(":8080")
 }
