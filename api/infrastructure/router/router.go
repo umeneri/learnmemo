@@ -3,14 +3,15 @@ package router
 import (
 	"api/interfaces/auth"
 	"api/interfaces/controller"
-	// "api/interfaces/middleware"
+
+	"api/interfaces/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoute(taskController controller.TaskController, userController controller.UserController) *gin.Engine {
 	engine := gin.Default()
-	// engine.Use(middleware.RecordUaAndTime)
+	engine.Use(middleware.RecordUaAndTime)
 	engine.LoadHTMLGlob("web/*")
 	taskRoute := engine.Group("/api/task")
 	{
@@ -32,6 +33,8 @@ func SetupRoute(taskController controller.TaskController, userController control
 			userRoute.GET("/callback/:provider", userController.Callback)
 			userRoute.GET("/logout", userController.Logout)
 	}
+
+	engine.GET("/entering", auth.AuthRequired, userController.Entering)
 	return engine
 
 }

@@ -92,7 +92,7 @@
         <span>{{ getFormatedDate(item.createdAt) }}</span>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">リセット</v-btn>
+        <v-btn color="primary" @click="fetchTaskList">リセット</v-btn>
       </template>
     </v-data-table>
   </v-app>
@@ -181,7 +181,8 @@ export default class DataTable extends Vue {
     return `${elapsedTimeHours}時間${elapsedTimeMinutes}分`
   }
 
-  created() {
+  async created() {
+    // this.tasks = await this.fetchTaskList()
     this.fetchTaskList()
   }
 
@@ -244,13 +245,15 @@ export default class DataTable extends Vue {
     this.close()
   }
 
-  async fetchTaskList() {
+  async fetchTaskList(): Promise<Array<Task>> {
     try {
       const response = await this.$axios.$get('/task/v1/list')
       console.log(response.data)
       this.tasks = response.data
+      return response.data
     } catch (error) {
       console.log(error)
+      return []
     }
   }
 

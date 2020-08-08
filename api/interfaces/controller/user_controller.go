@@ -16,6 +16,7 @@ import (
 
 type UserController interface {
 	Index(c *gin.Context)
+	Entering(c *gin.Context)
 	LoginIndex(c *gin.Context)
 	Login(c *gin.Context)
 	Callback(c *gin.Context)
@@ -47,14 +48,42 @@ func (t *userController) Index(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"user": user,
-	})
+	if os.Getenv("ENV") == "dev" {
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/")
+	} else {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"user": user,
+		})
+	}
 }
 
-func (t *userController) LoginIndex(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", "")
+func (t *userController) Entering(c *gin.Context) {
+	gothUser, err := auth.GetUser(c)
+	user := t.userUseCase.FindByEmail(gothUser.Email)
+
+	if user == nil || err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
+
+	if os.Getenv("ENV") == "dev" {
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/entering")
+	} else {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"user": user,
+		})
+	}
 }
+
+
+func (t *userController) LoginIndex(c *gin.Context) {
+	if os.Getenv("ENV") == "dev" {
+		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/login")
+	} else {
+		c.HTML(http.StatusOK, "login.html", "")
+	}
+}
+
 
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
@@ -79,8 +108,13 @@ func (t *userController) Callback(c *gin.Context) {
 	}
 
 	auth.SaveSession(user, c)
-	t.userUseCase.SaveUser(convertToSocialLoginUser(user))
-	redirectTo(c, "")
+
+	if t.userUseCase.FindByEmail(user.Email) != nil {
+		redirectTo(c, "")
+	} else {
+		t.userUseCase.SaveUser(convertToSocialLoginUser(user))
+		redirectTo(c, "entering")
+	}
 }
 
 func (t *userController) Logout(c *gin.Context) {
