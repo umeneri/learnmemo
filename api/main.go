@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -28,5 +29,5 @@ func setupServer(env string) *gin.Engine {
 
 func main() {
 	env := os.Getenv("ENV")
-	setupServer(env).Run(":8080")
+	setupServer(env).Run(fmt.Sprintf(":8080"))
 }
