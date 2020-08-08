@@ -25,7 +25,7 @@ yarn dev
 
 ```
 docker-compose up -d
-mysql -h 127.0.0.1 -uroot -p -P 3307 gin_test < docker/mysql_helper/init.sql
+./docker/mysql_helper/init.sh
 ```
 
 # xorm
