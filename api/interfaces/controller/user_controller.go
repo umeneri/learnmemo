@@ -38,7 +38,6 @@ func init() {
 	)
 }
 
-// func (t *userController)
 func (t *userController) Index(c *gin.Context) {
 	gothUser, err := auth.GetUser(c)
 	user := t.userUseCase.FindByEmail(gothUser.Email)
@@ -81,13 +80,20 @@ func (t *userController) Callback(c *gin.Context) {
 
 	auth.SaveSession(user, c)
 	t.userUseCase.LoginUser(convertToSocialLoginUser(user))
-
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	redirectTo(c, "")
 }
 
 func (t *userController) Logout(c *gin.Context) {
 	auth.DeleteSession(c)
-	c.Redirect(http.StatusTemporaryRedirect, "/login")
+	redirectTo(c, "login")
+}
+
+func redirectTo(c *gin.Context, location string)  {
+	if os.Getenv("ENV") == "dev" {
+		c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("http://localhost:3000/%s", location))
+	} else {
+		c.Redirect(http.StatusTemporaryRedirect, 	fmt.Sprintf("/%s", location))
+	}
 }
 
 func contextWithProviderName(c *gin.Context, provider string) *http.Request {
@@ -96,8 +102,8 @@ func contextWithProviderName(c *gin.Context, provider string) *http.Request {
 
 func convertToSocialLoginUser(user goth.User) usecase.SocialLoginUser {
 	return usecase.SocialLoginUser{
-		UserID: user.UserID,
-		Email: user.Email,
+		UserID:    user.UserID,
+		Email:     user.Email,
 		AvatarURL: user.AvatarURL,
 	}
 }
