@@ -9,6 +9,9 @@ RUN apk add --no-cache \
   git \
   && go get github.com/pilu/fresh
 
+COPY go.mod go.sum ./
+RUN go mod download
+
 EXPOSE 8080
 
 CMD ["fresh"]
