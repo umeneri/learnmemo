@@ -11,6 +11,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/gorilla/sessions v1.2.0
+	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible
@@ -20,6 +21,8 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/pilu/config v0.0.0-20131214182432-3eb99e6c0b9a // indirect
+	github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
 	go.uber.org/zap v1.15.0

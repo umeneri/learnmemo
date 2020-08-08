@@ -35,7 +35,7 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 
 func init() {
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3030/api/user/callback/google"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:8080/api/user/callback/google"),
 	)
 }
 
@@ -75,7 +75,6 @@ func (t *userController) Entering(c *gin.Context) {
 	}
 }
 
-
 func (t *userController) LoginIndex(c *gin.Context) {
 	if os.Getenv("ENV") == "dev" {
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/login")
@@ -83,7 +82,6 @@ func (t *userController) LoginIndex(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", "")
 	}
 }
-
 
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
@@ -122,11 +120,11 @@ func (t *userController) Logout(c *gin.Context) {
 	redirectTo(c, "login")
 }
 
-func redirectTo(c *gin.Context, location string)  {
+func redirectTo(c *gin.Context, location string) {
 	if os.Getenv("ENV") == "dev" {
 		c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("http://localhost:3000/%s", location))
 	} else {
-		c.Redirect(http.StatusTemporaryRedirect, 	fmt.Sprintf("/%s", location))
+		c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("/%s", location))
 	}
 }
 
