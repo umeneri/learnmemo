@@ -13,7 +13,7 @@ type SocialLoginUser struct {
 }
 
 type UserUseCase interface {
-	LoginUser(user SocialLoginUser) (*model.User, error)
+	SaveUser(user SocialLoginUser) (*model.User, error)
 	FindByEmail(email string) *model.User
 }
 
@@ -27,7 +27,7 @@ func NewUserUseCase(userRepository repository.UserRepository) UserUseCase {
 	}
 }
 
-func (t *userUseCase) LoginUser(socialLoginUser SocialLoginUser) (*model.User, error) {
+func (t *userUseCase) SaveUser(socialLoginUser SocialLoginUser) (*model.User, error) {
 	user := t.userRepository.FindByEmail(socialLoginUser.Email)
 
 	if user != nil {

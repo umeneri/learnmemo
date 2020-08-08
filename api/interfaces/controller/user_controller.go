@@ -59,7 +59,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 func (t *userController) Login(c *gin.Context) {
 	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		auth.SaveSession(user, c)
-		t.userUseCase.LoginUser(convertToSocialLoginUser(user))
+		t.userUseCase.SaveUser(convertToSocialLoginUser(user))
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")
@@ -79,7 +79,7 @@ func (t *userController) Callback(c *gin.Context) {
 	}
 
 	auth.SaveSession(user, c)
-	t.userUseCase.LoginUser(convertToSocialLoginUser(user))
+	t.userUseCase.SaveUser(convertToSocialLoginUser(user))
 	redirectTo(c, "")
 }
 

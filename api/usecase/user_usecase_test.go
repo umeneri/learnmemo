@@ -29,7 +29,7 @@ func TestSignUpUser(t *testing.T) {
 	mockUserRepository := mockUserRepository{}
 	usecase := usecase.NewUserUseCase(&mockUserRepository)
 
-	user, err := usecase.LoginUser(socialLoginUser)
+	user, err := usecase.SaveUser(socialLoginUser)
 	if err != nil {
 		t.Fatalf("login user error")
 	}
@@ -62,7 +62,7 @@ func TestLoginUser(t *testing.T) {
 	mockUserRepository := mockLoginUserRepository{}
 	usecase := usecase.NewUserUseCase(&mockUserRepository)
 
-	user, err := usecase.LoginUser(socialLoginUser)
+	user, err := usecase.SaveUser(socialLoginUser)
 	if err != nil {
 		t.Fatalf("login user error")
 	}
