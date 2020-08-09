@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Header />
-    <nuxt/>
+    <nuxt />
   </div>
 </template>
+
+<script lang="ts">
+</script>

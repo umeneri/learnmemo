@@ -1,6 +1,10 @@
 import type { MutationTree, ActionTree, ActionContext } from "vuex";
 import type { Context as AppContext } from "@nuxt/types";
-import type { RootState } from "~/types";
+// import type { RootState } from "~/types";
+
+export interface RootState {
+  title: string;
+}
 
 export const state = (): RootState => ({
   title: ""
