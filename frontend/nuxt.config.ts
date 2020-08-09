@@ -21,7 +21,7 @@ export default {
   buildModules: ['@nuxt/typescript-build'],
   modules: ['@nuxtjs/axios', '@nuxtjs/vuetify', '@nuxtjs/proxy'],
   axios: {
-    prefix: '/api',
+    baseUrl: "http://localhost:8080"
   },
   proxy: {
     '/api': {

@@ -247,7 +247,9 @@ export default class DataTable extends Vue {
 
   async fetchTaskList(): Promise<Array<Task>> {
     try {
-      const response = await this.$axios.$get('/task/v1/list')
+      const response = await this.$axios.$get(
+        `${window.location.origin}/api/task/v1/list`
+      )
       console.log(response.data)
       this.tasks = response.data
       return response.data
@@ -259,7 +261,10 @@ export default class DataTable extends Vue {
 
   async sendInitialTask(task: Task) {
     try {
-      const response = await this.$axios.$post('/task/v1/add', task)
+      const response = await this.$axios.$post(
+        `${window.location.origin}/api/task/v1/add`,
+        task
+      )
       console.log(response)
     } catch (error) {
       console.log(error)
@@ -269,7 +274,7 @@ export default class DataTable extends Vue {
   async sendEditedTask(task: Task) {
     try {
       const response = await this.$axios.$put(
-        `/task/v1/update/${task.id}`,
+        `${window.location.origin}/api/task/v1/update${task.id}`,
         task
       )
       console.log(response)
@@ -280,7 +285,7 @@ export default class DataTable extends Vue {
 
   async sendDeleteTask(task: Task) {
     try {
-      const response = await this.$axios.$delete(`/task/v1/delete/${task.id}`)
+      const response = await this.$axios.$delete(`${window.location.origin}/api/task/v1/delete/${task.id}`)
       console.log(response)
     } catch (error) {
       console.log(error)
