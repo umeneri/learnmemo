@@ -1,105 +1,114 @@
 <template>
   <v-app>
-    <v-data-table
-      :headers="headers"
-      :items="tasks"
-      sort-by="createdAt"
-      sort-desc
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-toolbar flat color="white">
-          <v-toolbar-title>学習記録</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
-                >新しい記録</v-btn
-              >
-            </template>
-            <v-card>
-              <v-form ref="form" v-model="valid">
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
+    <Header />
+    <v-main>
+      <v-data-table
+        :headers="headers"
+        :items="tasks"
+        sort-by="createdAt"
+        sort-desc
+        class="elevation-1 pt-6"
+      >
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-toolbar-title>学習記録</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                  >新しい記録</v-btn
+                >
+              </template>
+              <v-card>
+                <v-form ref="form" v-model="valid">
+                  <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                  </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedTask.title"
-                          label="タイトル"
-                          placeholder="英単語"
-                          :rules="titleRules"
-                          required
-                          maxlength="100"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model.number="editedTask.elapsedTimeHours"
-                          label="学習時間(時)"
-                          placeholder="1"
-                          type="number"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model.number="editedTask.elapsedTimeMinutes"
-                          label="学習時間(分)"
-                          placeholder="30"
-                          type="number"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedTask.title"
+                            label="タイトル"
+                            placeholder="英単語"
+                            :rules="titleRules"
+                            required
+                            maxlength="100"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model.number="editedTask.elapsedTimeHours"
+                            label="学習時間(時)"
+                            placeholder="1"
+                            type="number"
+                            required
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model.number="editedTask.elapsedTimeMinutes"
+                            label="学習時間(分)"
+                            placeholder="30"
+                            type="number"
+                            required
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close"
-                    >キャンセル</v-btn
-                  >
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="save"
-                    :disabled="!valid"
-                    >保存</v-btn
-                  >
-                </v-card-actions>
-              </v-form>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editTask(item)">
-          mdi-pencil
-        </v-icon>
-        <v-icon small @click="deleteTask(item)">
-          mdi-delete
-        </v-icon>
-      </template>
-      <template v-slot:item.elapsedTime="{ item }">
-        <span>{{ getFormatedElapsedTime(item.elapsedTime) }}</span>
-      </template>
-      <template v-slot:item.createdAt="{ item }">
-        <span>{{ getFormatedDate(item.createdAt) }}</span>
-      </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="fetchTaskList">リセット</v-btn>
-      </template>
-    </v-data-table>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close"
+                      >キャンセル</v-btn
+                    >
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="save"
+                      :disabled="!valid"
+                      >保存</v-btn
+                    >
+                  </v-card-actions>
+                </v-form>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="editTask(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteTask(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+        <template v-slot:item.elapsedTime="{ item }">
+          <span>{{ getFormatedElapsedTime(item.elapsedTime) }}</span>
+        </template>
+        <template v-slot:item.createdAt="{ item }">
+          <span>{{ getFormatedDate(item.createdAt) }}</span>
+        </template>
+        <template v-slot:no-data>
+          <v-btn color="primary" @click="fetchTaskList">リセット</v-btn>
+        </template>
+      </v-data-table>
+    </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import Header from '~/components/Header.vue'
 
 interface Task {
   id: number
@@ -121,7 +130,9 @@ interface EditedTask {
 }
 
 @Component({
-  components: {},
+  components: {
+    Header
+  },
 })
 export default class DataTable extends Vue {
   headers = [
@@ -285,7 +296,9 @@ export default class DataTable extends Vue {
 
   async sendDeleteTask(task: Task) {
     try {
-      const response = await this.$axios.$delete(`${window.location.origin}/api/task/v1/delete/${task.id}`)
+      const response = await this.$axios.$delete(
+        `${window.location.origin}/api/task/v1/delete/${task.id}`
+      )
       console.log(response)
     } catch (error) {
       console.log(error)
