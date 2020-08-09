@@ -27,7 +27,7 @@ func (t *taskUseCase) SetTask(task *model.Task) error {
 }
 
 func (t *taskUseCase) GetTaskList(userId int64) []model.Task {
-	return t.taskRepository.GetTaskList()
+	return t.taskRepository.GetTaskList(userId)
 }
 
 func (t *taskUseCase) UpdateTask(task *model.Task) error {

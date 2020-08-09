@@ -5,6 +5,7 @@ import (
 	"api/domain/repository"
 
 	"github.com/go-xorm/xorm"
+	"github.com/lunny/log"
 )
 
 type taskRepository struct {
@@ -24,12 +25,14 @@ func (t *taskRepository) SetTask(task *model.Task) error {
 	return nil
 }
 
-func (t *taskRepository) GetTaskList() []model.Task {
+func (t *taskRepository) GetTaskList(userId int64) []model.Task {
 	tasks := make([]model.Task, 0)
-	err := t.dbEngine.Limit(20, 0).Find(&tasks)
+	err := t.dbEngine.Where("user_id = ?", userId).Limit(20, 0).Find(&tasks)
 	if err != nil {
 		panic(err)
 	}
+	log.Println("tasks list")
+	log.Println(tasks)
 	return tasks
 }
 
