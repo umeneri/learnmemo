@@ -38,10 +38,9 @@ func NewTaskController(useCase usecase.TaskUseCase) TaskController {
 func (t *taskController) AddTask(c *gin.Context) {
 	taskForm := TaskForm{}
 	err := c.BindJSON(&taskForm)
-	log.Println(taskForm)
-	log.Println(err)
 
 	userId, err := auth.GetUserId(c)
+	log.Println(userId)
 	log.Println(err)
 
 	task := model.Task{

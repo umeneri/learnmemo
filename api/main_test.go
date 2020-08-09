@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -36,16 +37,6 @@ func TestMain(m *testing.M) {
 	os.Exit(ret)
 }
 
-func TestListTask(t *testing.T) {
-	resp, err := http.Get(fmt.Sprintf("%s/api/task/v1/list", ts.URL))
-
-	if err != nil {
-		t.Fatalf("Expected no error, got %v", err)
-	}
-
-	checkResponseHeader(t, resp, 200)
-}
-
 func TestAddTask(t *testing.T) {
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"title":       "title1",
@@ -65,12 +56,33 @@ func TestAddTask(t *testing.T) {
 	checkResponseHeader(t, resp, 201)
 }
 
+type ListTaskResponse struct {
+	Data    []model.Task
+	Message string
+}
+
+func TestListTask(t *testing.T) {
+	resp, err := httpGet(t, "api/task/v1/list")
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	checkResponseHeader(t, resp, 200)
+
+	defer resp.Body.Close()
+	var taskResp ListTaskResponse
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	json.Unmarshal(bytes, &taskResp)
+
+	if len(taskResp.Data) == 0 {
+		t.Fatalf("error: tasks is empty")
+	}
+}
+
 func TestUserIndex(t *testing.T) {
-	url := fmt.Sprintf("%s/", ts.URL)
-	req, err := http.NewRequest(http.MethodGet, url, strings.NewReader(""))
-	req.AddCookie(cookie)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := httpGet(t, "")
+
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -151,4 +163,17 @@ func checkResponseHeader(t *testing.T, resp *http.Response, statusCode int) {
 	if val[0] != "application/json; charset=utf-8" {
 		t.Fatalf("Expected \"application/json; charset=utf-8\", got %s", val[0])
 	}
+}
+
+func httpGet(t *testing.T, path string) (*http.Response, error) {
+	url := fmt.Sprintf("%s/%s", ts.URL, path)
+	req, err := http.NewRequest(http.MethodGet, url, strings.NewReader(""))
+	if err != nil {
+		t.Fatalf("create get repuest error")
+	}
+
+	req.AddCookie(cookie)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	return resp, err
 }
