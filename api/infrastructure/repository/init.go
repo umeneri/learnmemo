@@ -11,15 +11,13 @@ import (
 )
 
 func initDbEngine(dbName string) *xorm.Engine {
-	mysqlHost := os.Getenv("MYSQL_HOST")
-	if mysqlHost == "" {
-		mysqlHost = "localhost"
-	}
-
+	dbURL := os.Getenv("DATABASE_URL")
 	driverName := "mysql"
-	DsName := fmt.Sprintf("root:root@(%s:3306)/%s?charset=utf8", mysqlHost, dbName)
+	if dbURL == "" {
+		dbURL = fmt.Sprintf("root:root@(localhost:3306)/%s?charset=utf8", dbName)
+	}
 	err := errors.New("")
-	dbEngine, err := xorm.NewEngine(driverName, DsName)
+	dbEngine, err := xorm.NewEngine(driverName, dbURL)
 	if err != nil && err.Error() != "" {
 		log.Fatal(err.Error())
 	}
