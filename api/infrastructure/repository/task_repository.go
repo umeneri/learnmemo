@@ -5,7 +5,6 @@ import (
 	"api/domain/repository"
 
 	"github.com/go-xorm/xorm"
-	"github.com/lunny/log"
 )
 
 type taskRepository struct {
@@ -31,8 +30,6 @@ func (t *taskRepository) GetTaskList(userId int64) []model.Task {
 	if err != nil {
 		panic(err)
 	}
-	log.Println("tasks list")
-	log.Println(tasks)
 	return tasks
 }
 
