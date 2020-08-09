@@ -26,8 +26,8 @@ func SetupRoute(taskController controller.TaskController, userController control
 			v1.DELETE("/delete/:id", auth.AuthRequired, taskController.DeleteTask)
 		}
 	}
-	engine.GET("/", auth.AuthRequired, userController.Index)
-	engine.GET("/entering", auth.AuthRequired, userController.Entering)
+	engine.GET("/", auth.AuthRequiredPage, userController.Index)
+	engine.GET("/entering", auth.AuthRequiredPage, userController.Entering)
 	engine.GET("/login", userController.LoginIndex)
 
 	userRoute := engine.Group("/api/user")
@@ -37,7 +37,7 @@ func SetupRoute(taskController controller.TaskController, userController control
 		userRoute.GET("/logout", userController.Logout)
 		v1 := userRoute.Group("/v1")
 		{
-			v1.PUT("/update", userController.UpdateUser)
+			v1.PUT("/update", auth.AuthRequired, userController.UpdateUser)
 		}
 	}
 

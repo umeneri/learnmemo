@@ -285,7 +285,7 @@ export default class DataTable extends Vue {
   async sendEditedTask(task: Task) {
     try {
       const response = await this.$axios.$put(
-        `${window.location.origin}/api/task/v1/update${task.id}`,
+        `${window.location.origin}/api/task/v1/update/${task.id}`,
         task
       )
       console.log(response)

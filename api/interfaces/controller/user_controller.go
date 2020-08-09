@@ -5,12 +5,11 @@ import (
 	"api/usecase"
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
+	"github.com/lunny/log"
 	"github.com/gin-gonic/gin"
-	"github.com/k0kubun/pp"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
@@ -50,7 +49,9 @@ func (t *userController) Index(c *gin.Context) {
 	user, err := auth.GetUser(c)
 
 	if user == nil || err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		log.Println("Error: user not found")
+		log.Println(err)
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
 		return
 	}
 
@@ -65,7 +66,9 @@ func (t *userController) Entering(c *gin.Context) {
 	user, err := auth.GetUser(c)
 
 	if user == nil || err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		log.Println("Error: user not found")
+		log.Println(err)
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
 		return
 	}
 
@@ -108,6 +111,7 @@ func (t *userController) Callback(c *gin.Context) {
 	gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
 		log.Println("Error: not complete user auth")
+		log.Println(err)
 		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	}
 
@@ -115,7 +119,20 @@ func (t *userController) Callback(c *gin.Context) {
 		auth.SaveSession(user, c)
 		redirectTo(c, "")
 	} else {
-		t.userUseCase.SaveUser(convertToSocialLoginUser(gothUser))
+		user, err := t.userUseCase.SaveUser(convertToSocialLoginUser(gothUser))
+		log.Println("user is ...")
+		log.Println(user)
+		if user == nil || err != nil {
+			log.Println("Error: not complete user save")
+			log.Println(err)
+			c.Redirect(http.StatusTemporaryRedirect, "/login")
+		}
+		err = auth.SaveSession(user, c)
+		if err != nil {
+			log.Println("Error: not complete user auth")
+			log.Println(err)
+			c.Redirect(http.StatusTemporaryRedirect, "/login")
+		}
 		redirectTo(c, "entering")
 	}
 }
@@ -137,8 +154,6 @@ func (t *userController) UpdateUser(c *gin.Context) {
 
 	user, err := auth.GetUser(c)
 
-	pp.Println(user)
-
 	if user == nil || err != nil {
 		c.String(http.StatusBadRequest, "Bad request: user not authorized")
 		return
@@ -148,6 +163,7 @@ func (t *userController) UpdateUser(c *gin.Context) {
 
 	err = t.userUseCase.UpdateUser(user)
 	if err != nil {
+		log.Fatal(err)
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
 	}

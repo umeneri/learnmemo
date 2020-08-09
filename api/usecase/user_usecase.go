@@ -4,6 +4,8 @@ import (
 	"api/domain/model"
 	"api/domain/repository"
 	"time"
+
+	"github.com/lunny/log"
 )
 
 type SocialLoginUser struct {
@@ -45,6 +47,7 @@ func (t *userUseCase) SaveUser(socialLoginUser SocialLoginUser) (*model.User, er
 	}
 
 	user, err := t.userRepository.SaveUser(user)
+	log.Println(user)
 	return user, err
 }
 
