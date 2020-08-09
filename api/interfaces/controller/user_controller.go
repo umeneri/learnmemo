@@ -40,8 +40,12 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 }
 
 func init() {
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+	  baseURL = "http://localhost:8080"
+	}
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:8080/api/user/callback/google"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), fmt.Sprintf("%s/api/user/callback/google", baseURL)),
 	)
 }
 
