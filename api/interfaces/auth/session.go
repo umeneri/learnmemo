@@ -1,13 +1,14 @@
 package auth
 
 import (
+	"api/domain/model"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
-	"github.com/markbates/goth"
 )
 
 var (
@@ -19,15 +20,15 @@ var (
 	userKey    = "auth"
 )
 
-func GetUserId() int64 {
-	return 1
+func init()  {
+	gob.Register(model.User{})
 }
 
 func AuthRequired(c *gin.Context) {
 	log.Println("with session")
 
 	user, err := GetUser(c)
-	if user.UserID == "" {
+	if user == nil {
 		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	} else if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
@@ -36,28 +37,44 @@ func AuthRequired(c *gin.Context) {
 	}
 }
 
-func GetUser(c *gin.Context) (goth.User, error) {
+func GetUser(c *gin.Context) (*model.User, error) {
 	session, _ := store.Get(c.Request, cookieName)
-	user, ok := session.Values[userKey].(goth.User)
+	user, ok := session.Values[userKey].(model.User)
 
 	log.Println(user)
 
 	if !ok {
 		err := fmt.Errorf("cannot get session value")
-		return user, err
+		return &user, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
-func SaveSession(user goth.User, c *gin.Context) {
+func GetUserId(c *gin.Context) (int64, error) {
+	session, _ := store.Get(c.Request, cookieName)
+	user, ok := session.Values[userKey].(model.User)
+
+	log.Println(user)
+
+	if !ok {
+		err := fmt.Errorf("cannot get session value")
+		return 0, err
+	}
+
+	return user.Id, nil
+}
+
+func SaveSession(user *model.User, c *gin.Context) error {
 	session, _ := store.Get(c.Request, cookieName)
 	session.Values[userKey] = user
-	session.Save(c.Request, c.Writer)
+	err := session.Save(c.Request, c.Writer)
+	return err
 }
 
-func DeleteSession(c *gin.Context) {
+func DeleteSession(c *gin.Context) error {
 	session, _ := store.Get(c.Request, cookieName)
 	session.Options.MaxAge = -1
-	session.Save(c.Request, c.Writer)
+	err := session.Save(c.Request, c.Writer)
+	return err
 }

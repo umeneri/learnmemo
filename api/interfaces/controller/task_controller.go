@@ -41,8 +41,11 @@ func (t *taskController) AddTask(c *gin.Context) {
 	log.Println(taskForm)
 	log.Println(err)
 
+	userId, err := auth.GetUserId(c)
+	log.Println(err)
+
 	task := model.Task{
-		UserId:      auth.GetUserId(),
+		UserId:      userId,
 		Title:       taskForm.Title,
 		ElapsedTime: taskForm.ElapsedTime,
 		Status:      taskForm.Status,
@@ -68,7 +71,10 @@ func (t *taskController) AddTask(c *gin.Context) {
 }
 
 func (t *taskController) ListTask(c *gin.Context) {
-	taskLists := t.taskUseCase.GetTaskList()
+	userId, err := auth.GetUserId(c)
+	log.Println(err)
+
+	taskLists := t.taskUseCase.GetTaskList(userId)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 		"data":    taskLists,
