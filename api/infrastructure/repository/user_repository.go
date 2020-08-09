@@ -37,3 +37,19 @@ func (t *userRepository) SaveUser(user *model.User) (*model.User, error) {
 	}
 	return nil, nil
 }
+
+func (t *userRepository) UpdateUser(user *model.User) error {
+	_, err := t.dbEngine.Update(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *userRepository) DeleteUser(user *model.User) error {
+	_, err := t.dbEngine.Id(user.Id).Delete(model.User{})
+	if err != nil {
+		return err
+	}
+	return nil
+}

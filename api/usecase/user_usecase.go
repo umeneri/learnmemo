@@ -15,6 +15,7 @@ type SocialLoginUser struct {
 type UserUseCase interface {
 	SaveUser(user SocialLoginUser) (*model.User, error)
 	FindByEmail(email string) *model.User
+	UpdateUser(user *model.User) error
 }
 
 type userUseCase struct {
@@ -49,4 +50,9 @@ func (t *userUseCase) SaveUser(socialLoginUser SocialLoginUser) (*model.User, er
 
 func (t *userUseCase) FindByEmail(email string) *model.User {
 	 return t.userRepository.FindByEmail(email)
+}
+
+func (t *userUseCase) UpdateUser(user *model.User) error {
+		err := t.userRepository.UpdateUser(user)
+		return err
 }

@@ -5,10 +5,12 @@ import (
 	"api/usecase"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/k0kubun/pp"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
@@ -21,10 +23,15 @@ type UserController interface {
 	Login(c *gin.Context)
 	Callback(c *gin.Context)
 	Logout(c *gin.Context)
+	UpdateUser(c *gin.Context)
 }
 
 type userController struct {
 	userUseCase usecase.UserUseCase
+}
+
+type UserForm struct {
+	Name string
 }
 
 func NewUserController(useCase usecase.UserUseCase) UserController {
@@ -114,6 +121,44 @@ func (t *userController) Callback(c *gin.Context) {
 func (t *userController) Logout(c *gin.Context) {
 	auth.DeleteSession(c)
 	redirectTo(c, "login")
+}
+
+func (t *userController) UpdateUser(c *gin.Context) {
+	userForm := UserForm{}
+	err := c.BindJSON(&userForm)
+
+	if err != nil {
+		log.Println(err)
+		c.String(http.StatusBadRequest, "Bad request: invalid form")
+		return
+	}
+
+	gothUser, err := auth.GetUser(c)
+
+	pp.Println(gothUser)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Bad request: user not authorized")
+		return
+	}
+
+	user := t.userUseCase.FindByEmail(gothUser.Email)
+	pp.Println(user)
+	if user == nil {
+		c.String(http.StatusBadRequest, "Bad request: user not authorized")
+		return
+	}
+
+	user.Name = userForm.Name
+
+	err = t.userUseCase.UpdateUser(user)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Server Error")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+	})
 }
 
 func redirectTo(c *gin.Context, location string) {
