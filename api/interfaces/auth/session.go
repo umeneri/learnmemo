@@ -29,9 +29,22 @@ func AuthRequired(c *gin.Context) {
 
 	user, err := GetUser(c)
 	if user == nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/login")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 	} else if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+	} else {
+		c.Next()
+	}
+}
+
+func AuthRequiredPage(c *gin.Context) {
+	log.Println("with session")
+
+	user, err := GetUser(c)
+	if user == nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
+	} else if err != nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	} else {
 		c.Next()
 	}

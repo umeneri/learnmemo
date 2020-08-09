@@ -3,6 +3,7 @@ package repository
 import (
 	"api/domain/model"
 	"api/domain/repository"
+	"fmt"
 
 	"github.com/go-xorm/xorm"
 )
@@ -35,7 +36,16 @@ func (t *userRepository) SaveUser(user *model.User) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	var newUser model.User
+	has, err := t.dbEngine.Table("user").Where("email = ?", user.Email).Get(&newUser)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		err = fmt.Errorf("user cannnot save correctly")
+		return nil, err
+	}
+	return &newUser, err
 }
 
 func (t *userRepository) UpdateUser(user *model.User) error {
