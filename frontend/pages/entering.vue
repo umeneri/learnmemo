@@ -64,7 +64,8 @@ export default class UserForm extends Vue {
   }
 
   async created() {
-    this.user = await this.fetchUser()
+    // this.user = await this.fetchUser()
+    this.user = { name: '' }
   }
 
   async save() {
@@ -74,20 +75,20 @@ export default class UserForm extends Vue {
     }
   }
 
-  async fetchUser(): Promise<User> {
-    try {
-      const response = await this.$axios.$get('/user/v1/me')
-      console.log(response.data)
-      return response.data
-    } catch (error) {
-      console.log(error)
-      return { name: '' }
-    }
-  }
+  // async fetchUser(): Promise<User> {
+  //   try {
+  //     const response = await this.$axios.$get(`${window.location.origin}/api/user/v1/me`)
+  //     console.log(response.data)
+  //     return response.data
+  //   } catch (error) {
+  //     console.log(error)
+  //     return { name: '' }
+  //   }
+  // }
 
   async updateUser(user: User): Promise<User> {
     try {
-      const response = await this.$axios.$post('/user/v1/me', user)
+      const response = await this.$axios.$put(`${window.location.origin}/api/user/v1/update`, user)
       console.log(response.data)
       return response.data
     } catch (error) {
