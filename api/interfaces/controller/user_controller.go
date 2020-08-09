@@ -51,9 +51,7 @@ func (t *userController) Index(c *gin.Context) {
 	if os.Getenv("ENV") == "dev" {
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/")
 	} else {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"user": user,
-		})
+		c.HTML(http.StatusOK, "index.html", "")
 	}
 }
 
@@ -69,9 +67,7 @@ func (t *userController) Entering(c *gin.Context) {
 	if os.Getenv("ENV") == "dev" {
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/entering")
 	} else {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"user": user,
-		})
+		c.HTML(http.StatusOK, "index.html", "")
 	}
 }
 
@@ -79,7 +75,7 @@ func (t *userController) LoginIndex(c *gin.Context) {
 	if os.Getenv("ENV") == "dev" {
 		c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000/login")
 	} else {
-		c.HTML(http.StatusOK, "login.html", "")
+		c.HTML(http.StatusOK, "index.html", "")
 	}
 }
 

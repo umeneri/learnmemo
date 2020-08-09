@@ -9,7 +9,7 @@ mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
 ## serverside
 
 ```
-go run main.go
+export ENV=dev; go run main.go
 ```
 localhost:8080にアクセスすることでサーバー側の確認ができます。
 
@@ -25,7 +25,8 @@ yarn dev
 
 ```
 docker-compose up -d
-./docker/mysql_helper/init.sh
+cd ./docker/mysql_helper/
+./init.sh
 ```
 
 # xorm

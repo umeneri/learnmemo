@@ -12,7 +12,10 @@ import (
 func SetupRoute(taskController controller.TaskController, userController controller.UserController) *gin.Engine {
 	engine := gin.Default()
 	engine.Use(middleware.RecordUaAndTime)
-	engine.LoadHTMLGlob("web/*")
+	engine.LoadHTMLGlob("./public/index.html")
+	engine.Static("/_nuxt", "./public/_nuxt")
+	engine.StaticFile("/favicon.ico", "./public/favicon.ico")
+
 	taskRoute := engine.Group("/api/task")
 	{
 		v1 := taskRoute.Group("/v1")
