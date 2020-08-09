@@ -3,6 +3,9 @@
 package main
 
 import (
+	"api/domain/model"
+	"api/infrastructure/repository"
+	"api/interfaces/auth"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -10,9 +13,22 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/markbates/goth"
 )
 
 var ts *httptest.Server
+var userRepository = repository.NewUserRepository("gin_test")
+var testUser = model.User{
+		Email: "hoge1@gmail.com",
+		Name:       "hoge1",
+		ProviderId: "hoge1",
+		AvatarUrl:  "hoge1",
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
 
 func TestMain(m *testing.M) {
 	setup()
@@ -59,12 +75,60 @@ func TestUserIndex(t *testing.T) {
 	}
 }
 
+func saveSessionAndUser() *http.Cookie {
+	resp := httptest.NewRecorder()
+	gin.SetMode(gin.TestMode)
+	c, _ := gin.CreateTestContext(resp)
+	c.Request, _ = http.NewRequest("GET", "/", nil)
+	gothUser := goth.User{
+		Email: "hoge1@gmail.com",
+	}
+	auth.SaveSession(gothUser, c)
+
+	_, err := userRepository.SaveUser(&testUser)
+	if err != nil {
+		return nil
+	}
+
+	parser := &http.Request{Header: http.Header{"Cookie": c.Writer.Header()["Set-Cookie"]}}
+	taskball, _ := parser.Cookie("taskball")
+	return taskball
+}
+
+func TestUpdateUser(t *testing.T) {
+	taskball := saveSessionAndUser()
+	if taskball == nil {
+		t.Fatalf("user was not saved")
+	}
+
+	requestBody, err := json.Marshal(map[string]interface{}{
+		"name": "name1",
+	})
+
+	url := fmt.Sprintf("%s/api/user/v1/update", ts.URL)
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(requestBody))
+	req.AddCookie(taskball)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	expectedCode := 200
+	if resp.StatusCode != expectedCode {
+		t.Fatalf("Expected status code %d, got %v", expectedCode, resp.StatusCode)
+	}
+}
+
 func setup() {
 	engine := setupServer("test")
 	ts = httptest.NewServer(engine)
 }
 
 func teardown() {
+	err := userRepository.DeleteUser(&testUser)
+	fmt.Println(err)
 	ts.Close()
 }
 

@@ -15,33 +15,32 @@ services:
     ports:
     - 3306:3306
 
+  # mysql_test:
+  #   image: mysql:8.0.17
+  #   container_name: mysql_test
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: gin_test
+  #     TZ: 'Asia/Tokyo'
+  #   command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   volumes:
+  #     # - ./docker/mysql/data_test:/var/lib/mysql
+  #     - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:cached
+  #   ports:
+  #     - 3307:3306
 
-  mysql_test:
-    image: mysql:8.0.17
-    container_name: mysql_test
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gin_test
-      TZ: 'Asia/Tokyo'
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      # - ./docker/mysql/data_test:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:cached
-    ports:
-      - 3307:3306
-
-  api_test:
-    build:
-      context: .
-      dockerfile: ./docker/api/Dockerfile
-    environment:
-      ENV: test
-      MYSQL_HOST: mysql_test
-    ports:
-      - '8081:8080'
-    tty: true
-    volumes:
-      - .:/go/src/app
-    command: fresh
-    depends_on:
-      - mysql_test
+  # api_test:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/api/Dockerfile
+  #   environment:
+  #     ENV: test
+  #     MYSQL_HOST: mysql_test
+  #   ports:
+  #     - '8081:8080'
+  #   tty: true
+  #   volumes:
+  #     - .:/go/src/app
+  #   command: fresh
+  #   depends_on:
+  #     - mysql_test

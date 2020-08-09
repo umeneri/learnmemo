@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"api/domain/model"
 	"errors"
 	"fmt"
 	"log"
@@ -27,11 +26,6 @@ func initDbEngine(dbName string) *xorm.Engine {
 	dbEngine.ShowSQL(true)
 	dbEngine.SetMaxOpenConns(2)
 	dbEngine.SetMapper(core.GonicMapper{})
-	err = dbEngine.Sync2(new(model.Task))
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
 	fmt.Println("init data base ok")
 
 	return dbEngine

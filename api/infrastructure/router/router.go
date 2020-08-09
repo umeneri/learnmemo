@@ -35,6 +35,10 @@ func SetupRoute(taskController controller.TaskController, userController control
 			userRoute.GET("/auth/:provider", userController.Login)
 			userRoute.GET("/callback/:provider", userController.Callback)
 			userRoute.GET("/logout", userController.Logout)
+		v1 := userRoute.Group("/v1")
+		{
+			v1.PUT("/update", userController.UpdateUser)
+		}
 	}
 
 	engine.GET("/entering", auth.AuthRequired, userController.Entering)
