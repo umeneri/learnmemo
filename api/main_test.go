@@ -1,5 +1,3 @@
-// file: main_test.go
-
 package main
 
 import (
@@ -22,13 +20,14 @@ import (
 var ts *httptest.Server
 var userRepository = repository.NewUserRepository("gin_test")
 var testUser = model.User{
-		Email: "hoge1@gmail.com",
-		Name:       "hoge1",
-		ProviderId: "hoge1",
-		AvatarUrl:  "hoge1",
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
-	}
+	Email:      "hoge1@gmail.com",
+	Name:       "hoge1",
+	ProviderId: "hoge1",
+	AvatarUrl:  "hoge1",
+	CreatedAt:  time.Now(),
+	UpdatedAt:  time.Now(),
+}
+var cookie *http.Cookie
 
 func TestMain(m *testing.M) {
 	setup()
@@ -75,39 +74,14 @@ func TestUserIndex(t *testing.T) {
 	}
 }
 
-func saveSessionAndUser() *http.Cookie {
-	resp := httptest.NewRecorder()
-	gin.SetMode(gin.TestMode)
-	c, _ := gin.CreateTestContext(resp)
-	c.Request, _ = http.NewRequest("GET", "/", nil)
-	gothUser := goth.User{
-		Email: "hoge1@gmail.com",
-	}
-	auth.SaveSession(gothUser, c)
-
-	_, err := userRepository.SaveUser(&testUser)
-	if err != nil {
-		return nil
-	}
-
-	parser := &http.Request{Header: http.Header{"Cookie": c.Writer.Header()["Set-Cookie"]}}
-	taskball, _ := parser.Cookie("taskball")
-	return taskball
-}
-
 func TestUpdateUser(t *testing.T) {
-	taskball := saveSessionAndUser()
-	if taskball == nil {
-		t.Fatalf("user was not saved")
-	}
-
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"name": "name1",
 	})
 
 	url := fmt.Sprintf("%s/api/user/v1/update", ts.URL)
 	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(requestBody))
-	req.AddCookie(taskball)
+	req.AddCookie(cookie)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 
@@ -124,6 +98,32 @@ func TestUpdateUser(t *testing.T) {
 func setup() {
 	engine := setupServer("test")
 	ts = httptest.NewServer(engine)
+	saveSessionAndUser()
+}
+
+func saveSessionAndUser() {
+	resp := httptest.NewRecorder()
+	gin.SetMode(gin.TestMode)
+	c, _ := gin.CreateTestContext(resp)
+	c.Request, _ = http.NewRequest("GET", "/", nil)
+	gothUser := goth.User{
+		Email: "hoge1@gmail.com",
+	}
+	auth.SaveSession(gothUser, c)
+
+	_, err := userRepository.SaveUser(&testUser)
+	if err != nil {
+		fmt.Println("Error in save user")
+		os.Exit(1)
+	}
+
+	parser := &http.Request{Header: http.Header{"Cookie": c.Writer.Header()["Set-Cookie"]}}
+	cookie, err = parser.Cookie("taskball")
+
+	if err != nil {
+		fmt.Println("Error in parse cookie")
+		os.Exit(1)
+	}
 }
 
 func teardown() {
