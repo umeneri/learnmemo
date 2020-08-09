@@ -80,6 +80,17 @@ func TestListTask(t *testing.T) {
 	}
 }
 
+func TestListTaskNotAuthenticated(t *testing.T) {
+	url := fmt.Sprintf("%s/api/task/v1/list", ts.URL)
+	resp, err := http.Get(url)
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	checkResponseHeader(t, resp, 401)
+}
+
 func TestUserIndex(t *testing.T) {
 	resp, err := httpGet(t, "")
 

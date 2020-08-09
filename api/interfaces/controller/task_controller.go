@@ -71,7 +71,10 @@ func (t *taskController) AddTask(c *gin.Context) {
 
 func (t *taskController) ListTask(c *gin.Context) {
 	userId, err := auth.GetUserId(c)
-	log.Println(err)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Bad request")
+		return
+	}
 
 	taskLists := t.taskUseCase.GetTaskList(userId)
 	c.JSON(http.StatusOK, gin.H{
