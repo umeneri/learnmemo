@@ -10,11 +10,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/markbates/goth"
 )
 
 var ts *httptest.Server
@@ -52,8 +52,11 @@ func TestAddTask(t *testing.T) {
 		"elapsedTime": 10,
 		"status":      1,
 	})
-
-	resp, err := http.Post(fmt.Sprintf("%s/api/task/v1/add", ts.URL), "application/json", bytes.NewBuffer(requestBody))
+	url := fmt.Sprintf("%s/api/task/v1/add", ts.URL)
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(requestBody))
+	req.AddCookie(cookie)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -63,7 +66,11 @@ func TestAddTask(t *testing.T) {
 }
 
 func TestUserIndex(t *testing.T) {
-	resp, err := http.Get(fmt.Sprintf("%s/", ts.URL))
+	url := fmt.Sprintf("%s/", ts.URL)
+	req, err := http.NewRequest(http.MethodGet, url, strings.NewReader(""))
+	req.AddCookie(cookie)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -78,7 +85,6 @@ func TestUpdateUser(t *testing.T) {
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"name": "name1",
 	})
-
 	url := fmt.Sprintf("%s/api/user/v1/update", ts.URL)
 	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(requestBody))
 	req.AddCookie(cookie)
@@ -106,10 +112,7 @@ func saveSessionAndUser() {
 	gin.SetMode(gin.TestMode)
 	c, _ := gin.CreateTestContext(resp)
 	c.Request, _ = http.NewRequest("GET", "/", nil)
-	gothUser := goth.User{
-		Email: "hoge1@gmail.com",
-	}
-	auth.SaveSession(gothUser, c)
+	auth.SaveSession(&testUser, c)
 
 	_, err := userRepository.SaveUser(&testUser)
 	if err != nil {

@@ -47,8 +47,7 @@ func init() {
 }
 
 func (t *userController) Index(c *gin.Context) {
-	gothUser, err := auth.GetUser(c)
-	user := t.userUseCase.FindByEmail(gothUser.Email)
+	user, err := auth.GetUser(c)
 
 	if user == nil || err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
@@ -63,8 +62,7 @@ func (t *userController) Index(c *gin.Context) {
 }
 
 func (t *userController) Entering(c *gin.Context) {
-	gothUser, err := auth.GetUser(c)
-	user := t.userUseCase.FindByEmail(gothUser.Email)
+	user, err := auth.GetUser(c)
 
 	if user == nil || err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
@@ -87,9 +85,14 @@ func (t *userController) LoginIndex(c *gin.Context) {
 }
 
 func (t *userController) Login(c *gin.Context) {
-	if user, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
+	if gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
+		user := t.userUseCase.FindByEmail(gothUser.Email)
+		if user != nil {
+			log.Println("Error: user not found")
+			c.Redirect(http.StatusTemporaryRedirect, "/login")
+		}
+
 		auth.SaveSession(user, c)
-		t.userUseCase.SaveUser(convertToSocialLoginUser(user))
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		provider := c.Param("provider")
@@ -102,18 +105,17 @@ func (t *userController) Callback(c *gin.Context) {
 	provider := c.Param("provider")
 	c.Request = contextWithProviderName(c, provider)
 
-	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
+	gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
-		fmt.Fprintln(c.Writer, err)
-		return
+		log.Println("Error: not complete user auth")
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	}
 
-	auth.SaveSession(user, c)
-
-	if t.userUseCase.FindByEmail(user.Email) != nil {
+	if user := t.userUseCase.FindByEmail(gothUser.Email); user != nil {
+		auth.SaveSession(user, c)
 		redirectTo(c, "")
 	} else {
-		t.userUseCase.SaveUser(convertToSocialLoginUser(user))
+		t.userUseCase.SaveUser(convertToSocialLoginUser(gothUser))
 		redirectTo(c, "entering")
 	}
 }
@@ -133,17 +135,11 @@ func (t *userController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	gothUser, err := auth.GetUser(c)
+	user, err := auth.GetUser(c)
 
-	pp.Println(gothUser)
-	if err != nil {
-		c.String(http.StatusBadRequest, "Bad request: user not authorized")
-		return
-	}
-
-	user := t.userUseCase.FindByEmail(gothUser.Email)
 	pp.Println(user)
-	if user == nil {
+
+	if user == nil || err != nil {
 		c.String(http.StatusBadRequest, "Bad request: user not authorized")
 		return
 	}

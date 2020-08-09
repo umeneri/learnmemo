@@ -1,6 +1,7 @@
 package auth_test
 
 import (
+	"api/domain/model"
 	"api/interfaces/auth"
 	"fmt"
 	"net/http"
@@ -10,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/markbates/goth"
 )
 
 func TestSaveSession(t *testing.T) {
@@ -19,10 +19,13 @@ func TestSaveSession(t *testing.T) {
 	c, _ := gin.CreateTestContext(resp)
 	c.Request, _ = http.NewRequest("GET", "/", nil)
 
-	user := goth.User{
+	user := model.User{
 		Email: "hoge@gmail.com",
 	}
-	auth.SaveSession(user, c)
+	err := auth.SaveSession(&user, c)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	resopnseHeader := c.Writer.Header()
 	str := resopnseHeader.Get("Set-Cookie")

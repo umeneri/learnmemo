@@ -7,7 +7,7 @@ import (
 
 type TaskUseCase interface {
 	SetTask(*model.Task) error
-	GetTaskList() []model.Task
+	GetTaskList(int64) []model.Task
 	UpdateTask(*model.Task) error
 	DeleteTask(id int) error
 }
@@ -26,7 +26,7 @@ func (t *taskUseCase) SetTask(task *model.Task) error {
 	return t.taskRepository.SetTask(task)
 }
 
-func (t *taskUseCase) GetTaskList() []model.Task {
+func (t *taskUseCase) GetTaskList(userId int64) []model.Task {
 	return t.taskRepository.GetTaskList()
 }
 
