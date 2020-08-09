@@ -19,6 +19,14 @@ func (t *mockUserRepository) SaveUser(user *model.User) (*model.User, error) {
 	}, nil
 }
 
+func (t *mockUserRepository) UpdateUser(user *model.User) error {
+	return nil
+}
+
+func (t *mockUserRepository) DeleteUser(user *model.User) error {
+	return nil
+}
+
 func TestSignUpUser(t *testing.T) {
 	socialLoginUser := usecase.SocialLoginUser{
 		UserID: "hoge",
@@ -50,6 +58,14 @@ func (t *mockLoginUserRepository) FindByEmail(email string) *model.User {
 
 func (t *mockLoginUserRepository) SaveUser(user *model.User) (*model.User, error) {
 	return nil, nil
+}
+
+func (t *mockLoginUserRepository) UpdateUser(user *model.User) error {
+	return nil
+}
+
+func (t *mockLoginUserRepository) DeleteUser(user *model.User) error {
+	return nil
 }
 
 func TestLoginUser(t *testing.T) {
