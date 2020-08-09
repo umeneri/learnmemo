@@ -7,11 +7,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gin
-      # MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       TZ: 'Asia/Tokyo'
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./docker/mysql/data:/var/lib/mysql
+      # - ./docker/mysql/data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:cached
     ports:
     - 3306:3306
@@ -23,12 +22,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gin_test
-      MYSQL_USER: root
-      # MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       TZ: 'Asia/Tokyo'
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./docker/mysql/data_test:/var/lib/mysql
+      # - ./docker/mysql/data_test:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:cached
     ports:
       - 3307:3306
@@ -47,4 +44,4 @@ services:
       - .:/go/src/app
     command: fresh
     depends_on:
-      - mysql
+      - mysql_test

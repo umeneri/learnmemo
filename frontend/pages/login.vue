@@ -3,20 +3,46 @@
     <v-app-bar app>
       <v-toolbar-title>LearnMemo</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="my-10" outlined color="blue" depressed theme="light" primary="text" href="/api/user/auth/google">Googleアカウントでログイン</v-btn>
+      <v-btn
+        class="my-10"
+        outlined
+        color="blue"
+        depressed
+        theme="light"
+        primary="text"
+        @click="moveToOauth"
+        >Googleアカウントでログイン</v-btn
+      >
     </v-app-bar>
 
     <v-main class="relative">
       <v-responsive class="movie">
-        <video autoplay loop muted src="https://res.cloudinary.com/dmqxwobws/video/upload/v1596726217/study_zshdsf.mp4"></video>
+        <video
+          autoplay
+          loop
+          muted
+          src="https://res.cloudinary.com/dmqxwobws/video/upload/v1596726217/study_zshdsf.mp4"
+        ></video>
       </v-responsive>
 
       <v-container class="fill-height content" fluid>
         <v-row align="center" justify="center">
           <v-col class="text-center" cols="12">
             <h1 class="text-h1 py-4">学び続けよう。</h1>
-            <h2 class="py-3">LearnMemoは学習を記録して成長を可視化するサービスです。</h2>
-            <v-btn class="my-10" large depressed rounded theme="light" primary="text" color="primary" href="/api/user/auth/google">Googleアカウントで始める</v-btn>
+            <h2 class="py-3">
+              LearnMemoは学習を記録して成長を可視化するサービスです。
+            </h2>
+            <v-btn
+              class="my-10"
+              large
+              depressed
+              rounded
+              theme="light"
+              primary="text"
+              color="primary"
+              @click="moveToOauth"
+              >Googleアカウントで始める</v-btn
+            >
           </v-col>
         </v-row>
       </v-container>
@@ -28,6 +54,19 @@
     </v-footer>
   </v-app>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'nuxt-property-decorator'
+
+@Component({
+  components: {},
+})
+export default class SignUpForm extends Vue {
+  moveToOauth() {
+    window.location.href = '/api/user/auth/google'
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .relative {
@@ -56,12 +95,6 @@
   justify-content: center;
   padding: 0 1rem;
 }
-/* video {
-  z-index: -1;
-  position: absolute;
-  left: 0;
-  top: 0;
-} */
 
 $white: #fff;
 $google-blue: #4285f4;

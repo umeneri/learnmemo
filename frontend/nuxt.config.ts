@@ -1,4 +1,5 @@
 export default {
+  mode: 'spa',
   env: {},
   head: {
     title: 'frontend',
@@ -15,7 +16,8 @@ export default {
   },
   loading: { color: '#3B8070' },
   // css: ["~/assets/css/main.css"],
-  build: {},
+  build: {
+  },
   buildModules: ['@nuxt/typescript-build'],
   modules: ['@nuxtjs/axios', '@nuxtjs/vuetify', '@nuxtjs/proxy'],
   axios: {
@@ -23,7 +25,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: 'http://localhost:3030',
+      target: 'http://localhost:8080',
     },
   },
 }

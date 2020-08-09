@@ -10,8 +10,9 @@ import (
 )
 
 func RecordUaAndTime(c *gin.Context) {
-	pp.Println(c)
-
+	pp.Println(c.Request.Method)
+	pp.Println(c.Request.RequestURI)
+	pp.Println(c.Request.Body)
 	//    logger, err := zap.NewProduction()
 	//    if err != nil{
 	//       log.Fatal(err.Error())
