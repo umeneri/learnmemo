@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - fix/deploy_action
+      - master
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
           key: ${{ runner.os }}-projectname-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys:
             ${{ runner.os }}-projectname-
-      - name: frontend build
+      - name: frontend install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
         working-directory: ./frontend
