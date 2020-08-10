@@ -14,7 +14,15 @@ jobs:
         with:
          node-version: '12'
          check-latest: true
+      - name: Cache node_modules
+        uses: actions/cache@preview
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-projectname-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys:
+            ${{ runner.os }}-projectname-
       - name: frontend build
+        if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
         working-directory: ./frontend
       - name: frontend build
