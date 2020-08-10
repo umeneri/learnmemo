@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "nuxt-ts",
-    "build": "nuxt-ts build; cp -r dist/* ../api/public/",
+    "build": "nuxt-ts build; cp -r dist/* ../public/",
     "start": "nuxt-ts start",
     "generate": "nuxt-ts build --target static && nuxt-ts export"
   },
