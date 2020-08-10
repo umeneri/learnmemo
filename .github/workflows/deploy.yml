@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - fix/deploy_action
 
 jobs:
   build:
@@ -11,7 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: frontend build
-        run: cd frontend; yarn build
+        run: cd frontend
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build
       - uses: akhileshns/heroku-deploy@v3.4.6
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
