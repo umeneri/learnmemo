@@ -2,14 +2,14 @@ export default {
   mode: 'spa',
   env: {},
   head: {
-    title: 'frontend',
+    title: 'LearnMemo',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
-        hid: 'description',
-        name: 'description',
-        content: 'Nuxt.js TypeScript project',
+        hid: 'LearnMemo',
+        name: 'LearnMemo',
+        content: 'study recording service',
       },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
