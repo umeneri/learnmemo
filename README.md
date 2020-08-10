@@ -1,7 +1,6 @@
 # 開発環境構築
 
 ```
-cd api
 docker-compose up -d
 mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/init.sql
 mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
@@ -10,7 +9,6 @@ mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
 ## serverside
 
 ```
-cd api
 export ENV=dev; go run main.go
 ```
 localhost:8080にアクセスすることでサーバー側の確認ができます。
