@@ -1,6 +1,7 @@
 # 開発環境構築
 
 ```
+cd api
 docker-compose up -d
 mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/init.sql
 mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
@@ -9,6 +10,7 @@ mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
 ## serverside
 
 ```
+cd api
 export ENV=dev; go run main.go
 ```
 localhost:8080にアクセスすることでサーバー側の確認ができます。
@@ -16,24 +18,19 @@ localhost:8080にアクセスすることでサーバー側の確認ができま
 ## frontend
 
 ```
+cd frontend
 yarn dev
 ```
 
 ブラウザでlocalhost:3000にアクセスするとフロント側を確認できます。
 
-## E2E
-
-```
-docker-compose up -d
-cd ./docker/mysql_helper/
-./init.sh
-```
-
 # xorm
 
 ## reverse
-$ xorm reverse mysql root:root@/gin?charset=utf8mb4 $GOPATH/src/github.com/go-xorm/cmd/xorm/templates/goxorm
 
+```
+$ xorm reverse mysql root:root@/gin?charset=utf8mb4 $GOPATH/src/github.com/go-xorm/cmd/xorm/templates/goxorm
+```
 
 # ref
 
