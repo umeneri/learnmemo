@@ -19,7 +19,7 @@ import (
 )
 
 var ts *httptest.Server
-var userRepository = repository.NewUserRepository("gin_test")
+var userRepository = repository.NewUserRepository()
 var testUser = model.User{
 	Email:      "hoge1@gmail.com",
 	Name:       "hoge1",
@@ -29,6 +29,11 @@ var testUser = model.User{
 	UpdatedAt:  time.Now(),
 }
 var cookie *http.Cookie
+
+func init()  {
+	os.Setenv("ENV", "test")
+	os.Setenv("DB_NAME", "gin_test")
+}
 
 func TestMain(m *testing.M) {
 	setup()
@@ -125,7 +130,7 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func setup() {
-	engine := setupServer("test")
+	engine := setupServer()
 	ts = httptest.NewServer(engine)
 	saveSessionAndUser()
 }
@@ -135,13 +140,12 @@ func saveSessionAndUser() {
 	gin.SetMode(gin.TestMode)
 	c, _ := gin.CreateTestContext(resp)
 	c.Request, _ = http.NewRequest("GET", "/", nil)
-	auth.SaveSession(&testUser, c)
-
-	_, err := userRepository.SaveUser(&testUser)
+	user, err := userRepository.SaveUser(&testUser)
 	if err != nil {
 		fmt.Println("Error in save user")
 		os.Exit(1)
 	}
+	auth.SaveSession(user, c)
 
 	parser := &http.Request{Header: http.Header{"Cookie": c.Writer.Header()["Set-Cookie"]}}
 	cookie, err = parser.Cookie("taskball")

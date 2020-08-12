@@ -3,6 +3,7 @@ package router
 import (
 	"api/interfaces/auth"
 	"api/interfaces/controller"
+	"os"
 
 	"api/interfaces/middleware"
 
@@ -11,7 +12,10 @@ import (
 
 func SetupRoute(taskController controller.TaskController, userController controller.UserController) *gin.Engine {
 	engine := gin.Default()
-	engine.Use(middleware.RecordUaAndTime)
+
+	if os.Getenv("ENV") == "dev" || os.Getenv("ENV") == "test" {
+		engine.Use(middleware.PrintAccessLog)
+	}
 	engine.LoadHTMLGlob("./public/index.html")
 	engine.Static("/_nuxt", "./public/_nuxt")
 	engine.StaticFile("/favicon.ico", "./public/favicon.ico")

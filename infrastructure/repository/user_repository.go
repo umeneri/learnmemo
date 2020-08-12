@@ -4,6 +4,7 @@ import (
 	"api/domain/model"
 	"api/domain/repository"
 	"fmt"
+	"log"
 
 	"github.com/go-xorm/xorm"
 )
@@ -12,8 +13,7 @@ type userRepository struct {
 	dbEngine *xorm.Engine
 }
 
-func NewUserRepository(dbName string) repository.UserRepository {
-	dbEngine := initDbEngine(dbName)
+func NewUserRepository() repository.UserRepository {
 	return &userRepository{dbEngine}
 }
 
@@ -26,7 +26,8 @@ func (t *userRepository) FindByEmail(email string) *model.User {
 	}
 
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return nil
 	}
 	return user
 }

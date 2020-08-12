@@ -13,26 +13,21 @@ import (
 	"api/usecase"
 )
 
-func setupServer(env string) *gin.Engine {
-	dbName := "gin"
-	if env == "test" {
-		dbName = "gin_test"
-	}
-	taskRepository := repository.NewTaskRepository(dbName)
+func setupServer() *gin.Engine {
+	taskRepository := repository.NewTaskRepository()
 	taskUseCase := usecase.NewTaskUseCase(taskRepository)
 	taskController := controller.NewTaskController(taskUseCase)
-	userRepository := repository.NewUserRepository(dbName)
+	userRepository := repository.NewUserRepository()
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	userController := controller.NewUserController(userUseCase)
 	return router.SetupRoute(taskController, userController)
 }
 
 func main() {
-	env := os.Getenv("ENV")
 	port := os.Getenv("PORT")
 
 	if port == "" {
 		port = "8080"
 	}
-	setupServer(env).Run(fmt.Sprintf(":%s", port))
+	setupServer().Run(fmt.Sprintf(":%s", port))
 }
