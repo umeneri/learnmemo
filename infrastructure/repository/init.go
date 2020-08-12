@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,21 +9,28 @@ import (
 	"xorm.io/core"
 )
 
-func initDbEngine(dbName string) *xorm.Engine {
+var dbEngine *xorm.Engine
+
+func init() {
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "gin"
+	}
 	dbURL := os.Getenv("DATABASE_URL")
-	driverName := "mysql"
 	if dbURL == "" {
 		dbURL = fmt.Sprintf("root:root@(localhost:3306)/%s?charset=utf8", dbName)
 	}
-	err := errors.New("")
-	dbEngine, err := xorm.NewEngine(driverName, dbURL)
-	if err != nil && err.Error() != "" {
+	var err error
+	dbEngine, err = xorm.NewEngine("mysql", dbURL)
+	if err != nil {
 		log.Fatal(err.Error())
 	}
 	dbEngine.ShowSQL(true)
 	dbEngine.SetMaxOpenConns(2)
 	dbEngine.SetMapper(core.GonicMapper{})
-	fmt.Println("init data base ok")
-
-	return dbEngine
+	_, err = dbEngine.Query("select 1")
+	if err != nil {
+		log.Fatal("error in db init: ", err)
+	}
+	log.Println("init data base ok")
 }

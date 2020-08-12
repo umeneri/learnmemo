@@ -2,8 +2,8 @@
 
 ```
 docker-compose up -d
-mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/init.sql
-mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
+cd docker/mysql_helper
+./init.sh
 ```
 
 ## serverside
@@ -12,6 +12,11 @@ mysql -h 127.0.0.1 -uroot -p -P 3306 gin < docker/mysql_helper/data.sql
 export ENV=dev; go run main.go
 ```
 localhost:8080にアクセスすることでサーバー側の確認ができます。
+
+### test
+```
+$ export DB_NAME="gin_test"; export ENV="test"; go test -v .
+```
 
 ## frontend
 

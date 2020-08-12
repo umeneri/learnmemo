@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS gin;
 CREATE DATABASE IF NOT EXISTS gin_test;
 
-DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `task`;
+DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint(20) unsigned NOT NULL auto_increment,

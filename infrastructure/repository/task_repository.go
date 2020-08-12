@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"log"
 	"api/domain/model"
 	"api/domain/repository"
 
@@ -11,8 +12,7 @@ type taskRepository struct {
 	dbEngine *xorm.Engine
 }
 
-func NewTaskRepository(dbName string) repository.TaskRepository {
-	dbEngine := initDbEngine(dbName)
+func NewTaskRepository() repository.TaskRepository {
 	return &taskRepository{dbEngine}
 }
 
@@ -28,7 +28,8 @@ func (t *taskRepository) GetTaskList(userId int64) []model.Task {
 	tasks := make([]model.Task, 0)
 	err := t.dbEngine.Where("user_id = ?", userId).Limit(20, 0).Find(&tasks)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return []model.Task{}
 	}
 	return tasks
 }

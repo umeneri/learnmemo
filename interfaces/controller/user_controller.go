@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lunny/log"
+	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
