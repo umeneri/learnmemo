@@ -44,12 +44,12 @@ jobs:
         key: ${{ runner.os }}-projectname-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
         restore-keys:
           ${{ runner.os }}-projectname-
-      - name: frontend install
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install
-        working-directory: ./frontend
-      - name: frontend build
-        run: yarn build
-        working-directory: ./frontend
+    - name: frontend install
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: yarn install
+      working-directory: ./frontend
+    - name: frontend build
+      run: yarn build
+      working-directory: ./frontend
     - name: Test
       run: go test -v ./...
