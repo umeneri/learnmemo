@@ -29,11 +29,6 @@ var testUser = model.User{
 }
 var cookie *http.Cookie
 
-func init() {
-	os.Setenv("ENV", "test")
-	os.Setenv("DB_NAME", "gin_test")
-}
-
 func TestMain(m *testing.M) {
 	setup()
 	ret := m.Run()
