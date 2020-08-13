@@ -167,7 +167,7 @@ func (t *userController) UpdateUser(c *gin.Context) {
 
 	err = t.userUseCase.UpdateUser(user)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
 	}

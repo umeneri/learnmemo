@@ -50,7 +50,7 @@ func (t *userRepository) SaveUser(user *model.User) (*model.User, error) {
 }
 
 func (t *userRepository) UpdateUser(user *model.User) error {
-	_, err := t.dbEngine.Update(user)
+	_, err := t.dbEngine.Where("email = ?", user.Email).Update(user)
 	if err != nil {
 		return err
 	}
