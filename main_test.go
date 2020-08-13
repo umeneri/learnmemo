@@ -19,7 +19,6 @@ import (
 )
 
 var ts *httptest.Server
-var userRepository = repository.NewUserRepository()
 var testUser = model.User{
 	Email:      "hoge1@gmail.com",
 	Name:       "hoge1",
@@ -30,7 +29,7 @@ var testUser = model.User{
 }
 var cookie *http.Cookie
 
-func init()  {
+func init() {
 	os.Setenv("ENV", "test")
 	os.Setenv("DB_NAME", "gin_test")
 }
@@ -140,8 +139,10 @@ func saveSessionAndUser() {
 	gin.SetMode(gin.TestMode)
 	c, _ := gin.CreateTestContext(resp)
 	c.Request, _ = http.NewRequest("GET", "/", nil)
+	userRepository := repository.NewUserRepository()
 	user, err := userRepository.SaveUser(&testUser)
 	if err != nil {
+		fmt.Println(err)
 		fmt.Println("Error in save user")
 		os.Exit(1)
 	}
@@ -151,14 +152,22 @@ func saveSessionAndUser() {
 	cookie, err = parser.Cookie("taskball")
 
 	if err != nil {
+		fmt.Println(err)
 		fmt.Println("Error in parse cookie")
 		os.Exit(1)
 	}
 }
 
 func teardown() {
-	err := userRepository.DeleteUser(&testUser)
-	fmt.Println(err)
+	engine := repository.InitDBEngine()
+	_, err := engine.Exec("DELETE FROM user")
+	if err != nil {
+		fmt.Println(err)
+	}
+	_, err = engine.Exec("DELETE FROM task")
+	if err != nil {
+		fmt.Println(err)
+	}
 	ts.Close()
 }
 
