@@ -27,7 +27,7 @@ jobs:
           fi
 
       - name: docker
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose.e2e.yml up -d
 
       - name: Build
         run: go build -v .
