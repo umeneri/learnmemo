@@ -155,11 +155,11 @@ func saveSessionAndUser() {
 
 func teardown() {
 	engine := repository.InitDBEngine()
-	_, err := engine.Exec("DELETE FROM user")
+	_, err := engine.Exec("DELETE FROM task")
 	if err != nil {
 		fmt.Println(err)
 	}
-	_, err = engine.Exec("DELETE FROM task")
+	_, err = engine.Exec("DELETE FROM user")
 	if err != nil {
 		fmt.Println(err)
 	}
