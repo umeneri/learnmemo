@@ -26,6 +26,9 @@ jobs:
               dep ensure
           fi
 
+      - name: docker
+        run: docker-compose up -d
+
       - name: Build
         run: go build -v .
 
@@ -33,25 +36,26 @@ jobs:
         with:
           node-version: '12'
           check-latest: true
+
       - name: Cache node_modules
         uses: actions/cache@preview
         with:
           path: ~/.cache/yarn
           key: ${{ runner.os }}-projectname-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: ${{ runner.os }}-projectname-
+
       - name: frontend install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
         working-directory: ./frontend
+
       - name: frontend build
         run: yarn build
         working-directory: ./frontend
-      - name: docker
-        run: docker-compose up -d
+
       - name: init db
-        run: |
-          sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 -uroot -proot -P 3306 gin_test < ./docker/mysql_helper/init.sql
+        run: mysql -h 127.0.0.1 -uroot -proot -P 3306 gin_test < ./docker/mysql_helper/init.sql
+
       - name: Test
         run: go test -v ./...
         env:
