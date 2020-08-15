@@ -40,8 +40,8 @@
               theme="light"
               primary="text"
               color="primary"
-              @click="moveToOauth"
-              >Googleアカウントで始める</v-btn
+              @click="moveToSimpleLogin"
+              >かんたんログイン(機能テスト用)</v-btn
             >
           </v-col>
         </v-row>
@@ -64,6 +64,9 @@ import { Component, Vue } from 'nuxt-property-decorator'
 export default class SignUpForm extends Vue {
   moveToOauth() {
     window.location.href = '/api/user/auth/google'
+  }
+ moveToSimpleLogin () {
+    window.location.href = '/api/user/simple-login'
   }
 }
 </script>

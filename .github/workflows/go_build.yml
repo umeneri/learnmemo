@@ -2,7 +2,8 @@ name: Go
 
 on:
   push:
-    branches: [feature/go_build]
+    branches:
+      - '**'
 
 jobs:
   build:

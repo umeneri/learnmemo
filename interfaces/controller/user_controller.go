@@ -8,17 +8,18 @@ import (
 	"net/http"
 	"os"
 
-	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
+	"log"
 )
 
 type UserController interface {
 	Index(c *gin.Context)
 	Entering(c *gin.Context)
 	LoginIndex(c *gin.Context)
+	SimpleLogin(c *gin.Context)
 	Login(c *gin.Context)
 	Callback(c *gin.Context)
 	Logout(c *gin.Context)
@@ -42,7 +43,7 @@ func NewUserController(useCase usecase.UserUseCase) UserController {
 func init() {
 	baseURL := os.Getenv("BASE_URL")
 	if baseURL == "" {
-	  baseURL = "http://localhost:8080"
+		baseURL = "http://localhost:8080"
 	}
 	goth.UseProviders(
 		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), fmt.Sprintf("%s/api/user/callback/google", baseURL)),
@@ -91,10 +92,21 @@ func (t *userController) LoginIndex(c *gin.Context) {
 	}
 }
 
+func (t *userController) SimpleLogin(c *gin.Context) {
+	user := t.userUseCase.FindByEmail("user1@gmail.com")
+	if user == nil {
+		log.Println("Error: user not found")
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
+	}
+
+	auth.SaveSession(user, c)
+	c.Redirect(http.StatusTemporaryRedirect, "/")
+}
+
 func (t *userController) Login(c *gin.Context) {
 	if gothUser, err := gothic.CompleteUserAuth(c.Writer, c.Request); err == nil {
 		user := t.userUseCase.FindByEmail(gothUser.Email)
-		if user != nil {
+		if user == nil {
 			log.Println("Error: user not found")
 			c.Redirect(http.StatusTemporaryRedirect, "/login")
 		}
