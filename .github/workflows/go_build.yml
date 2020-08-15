@@ -32,7 +32,8 @@ jobs:
         run: docker-compose -f docker-compose.e2e.yml up -d
 
       - name: Build
-        run: go build -v api
+        run: go build -v .
+        working-directory: ./api
 
       - uses: actions/setup-node@v2.1.1
         with:
