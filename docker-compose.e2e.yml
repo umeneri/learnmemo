@@ -3,13 +3,13 @@ version: '3'
 services:
   mysql:
     image: mysql:8.0.17
-    container_name: mysql_host
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gin_test
       TZ: 'Asia/Tokyo'
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:cached
     ports:
       - 3306:3306

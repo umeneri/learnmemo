@@ -34,3 +34,4 @@ jobs:
           heroku_app_name: "learnmemo"
           heroku_email: "koishimst@gmail.com"
           usedocker: true
+          appdir: api

@@ -26,12 +26,14 @@ jobs:
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
               dep ensure
           fi
+        working-directory: ./api
 
       - name: docker
         run: docker-compose -f docker-compose.e2e.yml up -d
 
       - name: Build
         run: go build -v .
+        working-directory: ./api
 
       - uses: actions/setup-node@v2.1.1
         with:
@@ -59,6 +61,7 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+        working-directory: ./api
         env:
           DB_NAME: gin_test
           ENV: test
