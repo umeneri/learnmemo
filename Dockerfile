@@ -7,7 +7,7 @@ ENV GO111MODULE=on
 RUN groupadd -g 10001 myapp \
     && useradd -u 10001 -g myapp myapp
 
-COPY go.mod go.sum ./
+COPY api/go.mod api/go.sum ./
 
 RUN go mod download
 
