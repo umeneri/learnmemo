@@ -34,8 +34,6 @@ func InitDBEngine() *xorm.Engine {
 	}
 	dbURL := fmt.Sprintf("%s:%s@(%s:3306)/%s?charset=utf8", dbUser, dbPassword, dbHost, dbName)
 
-	log.Println(dbURL)
-
 	var err error
 	engine, err := xorm.NewEngine("mysql", dbURL)
 	if err != nil {
