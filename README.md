@@ -85,7 +85,9 @@ $ xorm reverse mysql root:root@/gin?charset=utf8mb4 $GOPATH/src/github.com/go-xo
 1. Dockerイメージのビルド
 
 ```
-cd docker/production/api
+cd frontend
+yarn build
+cd ../docker/production/api
 ./build.sh
 ```
 
