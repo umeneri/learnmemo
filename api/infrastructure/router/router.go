@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoute(taskController controller.TaskController, userController controller.UserController) *gin.Engine {
+func SetupRoute(taskController controller.TaskController, userController controller.UserController, healthController controller.HealthController) *gin.Engine {
 	engine := gin.Default()
 
 	if os.Getenv("ENV") == "dev" || os.Getenv("ENV") == "test" {
@@ -19,6 +19,8 @@ func SetupRoute(taskController controller.TaskController, userController control
 	engine.LoadHTMLGlob("./public/index.html")
 	engine.Static("/_nuxt", "./public/_nuxt")
 	engine.StaticFile("/favicon.ico", "./public/favicon.ico")
+
+	engine.GET("/health", healthController.Index)
 
 	taskRoute := engine.Group("/api/task")
 	{
