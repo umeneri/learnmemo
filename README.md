@@ -1,3 +1,43 @@
+# 概要
+Goの学習を目的として作成したサイト。学習時間を記録することができるサービス。
+
+デモサイト： https://www.learnmemo.net/
+
+# 学習・実装済み事項
+- Goのクリーンアーキテクチャの設計
+- Goでのインテグレーションテスト・ユニットテスト
+- OAuth認証
+- SPA(nuxtjs)とサーバー(gin)の連携
+- Terraformでのインフラ構築（Route53, ACM, Fargate, RDS）
+
+# 機能
+- OAuthSignUp、ログイン
+- 学習記録のCRUD
+
+# Goサーバーサイド構成
+
+クリーンアーキテクチャで構成。
+
+- xormのコードをinfrastructure内に隔離し、ライブラリ変更の障壁を下げる
+- 同様にgin, gothのコードをinterface内に隔離
+
+```
+.
+├── domain
+│   ├── model
+│   └── repository
+├── infrastructure
+│   ├── repository
+│   └── router
+├── interfaces
+│   ├── auth
+│   ├── controller
+│   └── middleware
+├── main.go
+└── usecase
+```
+
+
 # 開発環境構築
 
 ```
@@ -9,13 +49,16 @@ cd docker/mysql_helper
 ## serverside
 
 ```
-export ENV=dev; go run main.go
+cd api
+export ENV=dev
+fresh -c recompile.conf
 ```
 localhost:8080にアクセスすることでサーバー側の確認ができます。
 
 ### test
 ```
-$ export DB_NAME="gin_test"; export ENV="test"; go test -v .
+cd api
+export DB_NAME="gin_test"; export ENV="test"; go test -v .
 ```
 
 ## frontend
@@ -30,12 +73,28 @@ yarn dev
 # xorm
 
 ## reverse
+DBのテーブル定義からmodelを生成する方法です。
 
 ```
 $ xorm reverse mysql root:root@/gin?charset=utf8mb4 $GOPATH/src/github.com/go-xorm/cmd/xorm/templates/goxorm
 ```
 
-# ref
+# デプロイ
+ローカルからデプロイする場合
 
-[Golang のパッケージ完全に理解した ← わかってない - くろのて](https://note.crohaco.net/2019/golang-package/)
-[ginを最速でマスターしよう - Qiita](https://qiita.com/Syoitu/items/9e7e3215fb7ac9dabc3a)
+1. Dockerイメージのビルド
+
+```
+cd frontend
+yarn build
+cd ../docker/production/api
+./build.sh
+```
+
+2. イメージのデプロイ
+
+```
+cd deploy/learnmemo
+ecspresso deploy --config=config.yaml
+```
+
