@@ -1,0 +1,54 @@
+{
+  "containerDefinitions": [
+    {
+      "cpu": 0,
+      "essential": true,
+      "image": "772010606571.dkr.ecr.ap-northeast-1.amazonaws.com/production-learnmemo:latest",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/production-learnmemo",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "production-learnmemo"
+        }
+      },
+      "name": "learnmemo",
+      "portMappings": [
+        {
+          "containerPort" : 8080,
+          "protocol" : "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DB_HOST",
+          "value": "production-learnmemo-db.ctv2xvay6szy.ap-northeast-1.rds.amazonaws.com"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "learnmemo"
+        },
+        {
+          "name": "DB_USER",
+          "value": "learnmemo"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "/rds/learnmemo/password"
+        }
+      ]
+    }
+  ],
+  "cpu": "256",
+  "executionRoleArn": "arn:aws:iam::772010606571:role/ecs-task-execution",
+  "family": "production-learnmemo",
+  "memory": "512",
+  "networkMode": "awsvpc",
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "taskRoleArn": "arn:aws:iam::772010606571:role/production-learnmemo"
+}

@@ -16,14 +16,24 @@ func init() {
 }
 
 func InitDBEngine() *xorm.Engine {
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost"
+	}
+	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		dbUser = "root"
+	}
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword == "" {
+		dbPassword = "root"
+	}
 	dbName := os.Getenv("DB_NAME")
 	if dbName == "" {
 		dbName = "gin"
 	}
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		dbURL = fmt.Sprintf("root:root@(localhost:3306)/%s?charset=utf8", dbName)
-	}
+	dbURL := fmt.Sprintf("%s:%s@(%s:3306)/%s?charset=utf8", dbUser, dbPassword, dbHost, dbName)
+
 	var err error
 	engine, err := xorm.NewEngine("mysql", dbURL)
 	if err != nil {

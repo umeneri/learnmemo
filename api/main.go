@@ -20,7 +20,8 @@ func setupServer() *gin.Engine {
 	userRepository := repository.NewUserRepository()
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	userController := controller.NewUserController(userUseCase)
-	return router.SetupRoute(taskController, userController)
+	healthController := controller.NewHealthController()
+	return router.SetupRoute(taskController, userController, healthController)
 }
 
 func main() {
