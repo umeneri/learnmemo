@@ -182,3 +182,4 @@ override.tf.json
 .env
 
 .tmp_build
+bin/
